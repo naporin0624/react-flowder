@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "packages/react-loader"
+		}
+	],
+	"settings": {
+  	"eslint.workingDirectories": [{ "mode": "auto" }]
+	}
+}

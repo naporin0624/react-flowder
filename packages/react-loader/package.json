@@ -1,0 +1,40 @@
+{
+  "name": "@naporin0624/react-loader",
+  "version": "0.0.0",
+  "description": "data loader for React",
+  "author": "naporin0624 <naporin0624@gmail.com>",
+  "homepage": "https://github.com/naporin0624/packages/",
+  "license": "MIT",
+  "main": "lib/index-cjs.js",
+  "module": "lib/index-esm.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "README.md",
+    "lib/index-cjs.js",
+    "lib/index-esm.js",
+    "lib/index.d.ts",
+    "package.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "lint": "eslint --ext .ts,.tsx,.js,.jsx src",
+    "lint:fix": "yarn lint --fix",
+    "prebuild": "tsc --noEmit && rimraf lib",
+    "build": "rollup -c ./rollup.config.js"
+  },
+  "private": false,
+  "peerDependencies": {
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@testing-library/react-hooks": "^7.0.2",
+    "@types/react": "^17.0.37",
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  }
+}
