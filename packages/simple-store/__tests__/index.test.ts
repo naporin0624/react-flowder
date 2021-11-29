@@ -1,4 +1,4 @@
-import { createStore } from "../src";
+import { createStore } from "..";
 
 let store = createStore<string, number>();
 

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { CacheContext, CacheStore } from "./cache";
 
-export const useLoader = <T extends Promise<unknown>>(key: string, promise: T): Awaited<T> => {
+export const useLoader = <T extends Promise<unknown>>(key: string, promise: T): T extends Promise<infer U> ? U : never => {
   const cacheStore = useContext(CacheContext);
   if (cacheStore === null) throw new Error("CacheContext not found");
 

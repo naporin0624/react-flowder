@@ -8,10 +8,9 @@
     "allowSyntheticDefaultImports": true,
     "importsNotUsedAsValues": "error",
     "esModuleInterop": true,
-    "moduleResolution": "Node"
+    "moduleResolution": "Node",
+    "target": "es2015",
+    "module": "ESNext"
   },
-  "include": [
-    "packages"
-  ] 
+  "include": ["packages"]
 }
-
