@@ -27,7 +27,7 @@
     "lint": "lerna run lint --stream",
     "test": "lerna run test --stream",
     "build": "lerna run build --stream",
-    "prepublish": "yarn build && yarn test",
-    "publish": "lerna publish --no-verify-access"
+    "predeploy": "yarn build && yarn test",
+    "deploy": "lerna publish --no-verify-access"
   }
 }
