@@ -32,7 +32,7 @@ export const useCacheKey = (): string[] => {
     return () => {
       disposable.unsubscribe();
     };
-  }, []);
+  }, [cacheStore]);
 
   return keys;
 };
