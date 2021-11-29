@@ -1,0 +1,32 @@
+{
+  "name": "@naporin0624/simple-store",
+  "version": "0.0.0",
+  "description": "A simple store using map",
+  "keywords": [
+    "store"
+  ],
+  "author": "naporin0624 <naporin0624@gmail.com>",
+  "homepage": "https://github.com/naporin0624/packages#readme",
+  "license": "MIT",
+  "main": "lib/index-cjs.js",
+  "module": "lib/index-esm.js",
+  "types": "lib/index.d.ts",
+   "files": [
+    "README.md",
+    "lib/index-cjs.js",
+    "lib/index-esm.js",
+    "lib/index.d.ts",
+    "package.json"
+  ], 
+  "publishConfig": {
+    "access": "public"
+  },
+  "private": false,
+  "scripts": {
+    "test": "jest --passWithNoTests",
+    "lint": "eslint --ext .ts,.tsx,.js,.jsx src",
+    "lint:fix": "yarn lint --fix",
+    "prebuild": "tsc --noEmit && rimraf lib",
+    "build": "rollup -c ./rollup.config.js"
+  }
+}

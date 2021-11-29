@@ -8,9 +8,17 @@
 		},
 		{
 			"path": "packages/react-flow"
+		},
+		{
+			"path": "packages/simple-store"
 		}
 	],
 	"settings": {
-  	"eslint.workingDirectories": [{ "mode": "auto" }]
+		"eslint.workingDirectories": [
+			{
+				"mode": "auto"
+			}
+		],
+		"editor.tabSize": 2
 	}
 }
