@@ -4,6 +4,9 @@
 			"path": "."
 		},
 		{
+			"path": "packages/react-flowder"
+		},
+		{
 			"path": "packages/react-loader"
 		},
 		{
