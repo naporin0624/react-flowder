@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "packages/react-loader"
+		},
+		{
+			"path": "packages/react-flow"
 		}
 	],
 	"settings": {
