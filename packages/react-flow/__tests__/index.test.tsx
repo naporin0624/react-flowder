@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import React, { FC, useContext } from "react";
 import { Subject } from "rxjs";
-import { Provider, useFlow } from "..";
+import { Provider, useFlow, FlowContext } from "..";
 import { act, renderHook } from "@testing-library/react-hooks";
 
 const Wrapper: FC = ({ children }) => {
@@ -40,4 +40,18 @@ test("subscribe once call", () => {
   expect(result.current).toEqual(expect.arrayContaining([1, 1, 1]));
   expect(spy.mock.calls.length).toBe(2);
   spy.mockRestore();
+});
+
+test("unmount test", () => {
+  const { result, unmount } = renderHook(() => [useFlow("test", subject), useContext(FlowContext)] as const, { wrapper: Wrapper });
+  expect(result.current[0]).toBe(undefined);
+
+  act(() => {
+    subject.next(1);
+  });
+  expect(result.current[0]).toBe(1);
+  expect(result.current[1]?.state.get("test")).toBe(1);
+  unmount();
+
+  expect(result.current[1]?.state.has("test")).toBe(false);
 });

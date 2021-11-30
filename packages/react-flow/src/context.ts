@@ -30,6 +30,8 @@ export const createFlowRoot = (): FlowRoot => {
     if (count > 0) return;
 
     disposer.get(key)?.unsubscribe();
+    state.delete(key);
+    disposer.delete(key);
   };
 
   return { state, register, lift };
