@@ -1,6 +1,6 @@
 import React, { FC, useContext } from "react";
 import { Subject } from "rxjs";
-import { Provider, useFlow, FlowContext } from "..";
+import { Provider, useFlow, FlowContext } from "../src";
 import { act, renderHook } from "@testing-library/react-hooks";
 
 const Wrapper: FC = ({ children }) => {
@@ -54,4 +54,9 @@ test("unmount test", () => {
   unmount();
 
   expect(result.current[1]?.state.has("test")).toBe(false);
+});
+
+test("context not found", () => {
+  const { result } = renderHook(() => useFlow("test", subject));
+  expect(result.error).toEqual(new Error("FlowContext is not found"));
 });

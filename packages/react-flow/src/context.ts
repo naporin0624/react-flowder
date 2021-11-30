@@ -20,13 +20,15 @@ export const createFlowRoot = (): FlowRoot => {
     counter.set(key, count + 1);
     if (count > 0) return;
 
-    const dispose = $.subscribe((value) => state.set(key, value));
+    const dispose = $.subscribe((value) => {
+      state.set(key, value);
+    });
     disposer.set(key, dispose);
   };
 
   const lift: FlowRoot["lift"] = (key) => {
     const count = (counter.get(key) ?? 0) - 1;
-    counter.set(key, count + 1);
+    counter.set(key, Math.max(count, 0));
     if (count > 0) return;
 
     disposer.get(key)?.unsubscribe();
