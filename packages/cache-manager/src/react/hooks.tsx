@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { Context } from "./context";
 
-import type { CacheManager } from "../core";
+import type { CacheManager, Config } from "../core";
 import type { Inject } from ".";
 
 const useNonNullContext = () => {
@@ -10,6 +10,6 @@ const useNonNullContext = () => {
   return c;
 };
 
-export const useCacheManager = (): CacheManager<Inject> => {
+export const useCacheManager = (): CacheManager<Config<Inject>> => {
   return useNonNullContext();
 };

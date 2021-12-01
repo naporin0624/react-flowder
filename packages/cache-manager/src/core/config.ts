@@ -9,7 +9,7 @@ export type Config<T> = {
   [K in keyof T]: [OmitReadonly<T[K]> extends [infer U, Option] ? U : T[K], Option];
 };
 
-export const parser = <T>(input: T): Config<T> => {
+export const parse = <T>(input: T): Config<T> => {
   if (typeof input !== "object") throw new Error("input is not object");
   if (input === null || input === undefined) throw new Error("input is not object");
   if (Array.isArray(input)) throw new Error("input is not Record");

@@ -1,4 +1,4 @@
-import { parser, createCacheManager } from ".";
+import { parse, createCacheManager } from ".";
 import { createStore } from "@naporin0624/simple-store";
 
 let keyCount = 0;
@@ -12,23 +12,23 @@ const config = {
 
 describe("validated test", () => {
   test("valid object test", () => {
-    const validated = parser(config);
+    const validated = parse(config);
     const [fn, option] = validated.buildKey;
     expect(typeof fn === "function").toBe(true);
     expect(option).toEqual({ maxAge: 5 * 60 * 1000 });
   });
   test("invalid object test", () => {
-    expect(() => parser(1)).toThrow(new Error("input is not object"));
-    expect(() => parser(null)).toThrow(new Error("input is not object"));
-    expect(() => parser(undefined)).toThrow(new Error("input is not object"));
-    expect(() => parser([])).toThrow(new Error("input is not Record"));
-    expect(() => parser({ error: 1 })).toThrow(new Error(`error is not function`));
+    expect(() => parse(1)).toThrow(new Error("input is not object"));
+    expect(() => parse(null)).toThrow(new Error("input is not object"));
+    expect(() => parse(undefined)).toThrow(new Error("input is not object"));
+    expect(() => parse([])).toThrow(new Error("input is not Record"));
+    expect(() => parse({ error: 1 })).toThrow(new Error(`error is not function`));
   });
 });
 
 describe("createRoot test", () => {
   const cacheStore = createStore<string, [unknown, number]>();
-  const validated = parser(config);
+  const validated = parse(config);
   const root = createCacheManager(validated, { provider: cacheStore });
   beforeEach(() => {
     root.watch();

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo } from "react";
-import { createCacheManager, parser } from "../core";
+import { createCacheManager, parse } from "../core";
 import { Context } from "./context";
 
 import type { Inject } from ".";
@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const Provider: FC<Props> = ({ value, children, config }) => {
-  const root = useMemo(() => createCacheManager(parser(value), { provider: config?.provider }), [config?.provider, value]);
+  const root = useMemo(() => createCacheManager(parse(value), { provider: config?.provider }), [config?.provider, value]);
   useEffect(() => {
     root.watch();
     return () => root.stop();
