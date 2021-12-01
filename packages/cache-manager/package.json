@@ -1,6 +1,6 @@
 {
   "name": "@naporin0624/cache-manager",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A simple function memoization management library.",
   "keywords": [
     "memo",
