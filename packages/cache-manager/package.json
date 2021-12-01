@@ -11,13 +11,19 @@
   "main": "lib/index-cjs.js",
   "module": "lib/index-esm.js",
   "types": "lib/index.d.ts",
-  "files": [
-    "README.md",
-    "lib/index-cjs.js",
-    "lib/index-esm.js",
-    "lib/index.d.ts",
-    "package.json"
-  ],
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index-esm.js",
+      "require": "./lib/index-cjs.js"
+    },
+    "./react": {
+      "types": "./lib/react/index.d.ts",
+      "import": "./lib/react/index-esm.js",
+      "require": "./lib/react/index-cjs.js"
+    }
+  },
   "publishConfig": {
     "access": "public"
   },
