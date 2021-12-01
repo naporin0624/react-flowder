@@ -1,8 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { act, renderHook } from "@testing-library/react-hooks";
-import { Cache, useLoader, useCacheKey } from "../src";
-import { useCache } from "../src/hooks";
-import Suspense from "react";
+import { Cache, useLoader, useCacheKey, useCache } from "../src";
 
 const Wrapper: FC = ({ children }) => {
   return <Cache>{children}</Cache>;
