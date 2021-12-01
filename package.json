@@ -28,6 +28,7 @@
     "test": "lerna run test --stream",
     "build": "lerna run build --stream",
     "predeploy": "yarn build && yarn test",
-    "deploy": "lerna publish --no-verify-access"
+    "deploy": "lerna publish --no-verify-access",
+    "coverage": "lerna run test -- --coverage"
   }
 }
