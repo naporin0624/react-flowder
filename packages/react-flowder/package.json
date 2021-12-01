@@ -8,7 +8,7 @@
     "rxjs"
   ],
   "author": "naporin0624 <naporin0624@gmail.com>",
-  "homepage": "https://github.com/naporin0624/packages#readme",
+  "homepage": "https://github.com/naporin0624/packages/tree/main/packages/react-flowder#react-flowder",
   "license": "MIT",
   "main": "lib/index-cjs.js",
   "module": "lib/index-esm.js",

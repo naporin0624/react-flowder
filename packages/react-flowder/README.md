@@ -2,14 +2,66 @@
 
 A library that connects rxjs to React and uses suspense to load data on the first subscribe.
 
+[![Image from Gyazo](https://i.gyazo.com/cd01bc2a86813a612e0633d3cbcb39f4.gif)](https://gyazo.com/cd01bc2a86813a612e0633d3cbcb39f4)
+
 ## Usage
 
-<iframe src="https://codesandbox.io/embed/quirky-liskov-qz6fu?fontsize=14&hidenavigation=1&theme=dark"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-     title="react-flowder-example"
-     allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
-     sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts"
-   ></iframe>
+```jsx
+import { render } from "react-dom";
+import { Provider, flowder, useFlowder } from "@naporin0624/react-flowder";
+import { EMPTY, interval, throwIfEmpty } from "rxjs";
+import { Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
+const timer = interval(100);
+const flowders = {
+  timer: flowder(timer),
+  error: flowder(EMPTY.pipe(throwIfEmpty(() => new Error("error!!"))))
+};
+
+const Timer = () => {
+  const time = useFlowder(flowders.timer);
+  return <div>count: {time}</div>;
+};
+
+const ErrorComponent = () => {
+  const data = useFlowder(flowders.error);
+
+  return <p>{data}</p>;
+};
+
+const App = () => {
+  const time = useFlowder(flowders.timer);
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 12 }}>
+        <Timer />
+        {time % 2 === 0 && <Timer />}
+      </div>
+      <ErrorBoundary
+        FallbackComponent={({ error, resetErrorBoundary }) => (
+          <div>
+            <p>{error.message}</p>
+            <button onClick={resetErrorBoundary}>reset</button>
+          </div>
+        )}
+      >
+        <ErrorComponent />
+      </ErrorBoundary>
+    </div>
+  );
+};
+
+const rootElement = document.getElementById("root");
+render(
+  <Suspense fallback={null}>
+    <Provider>
+      <App />
+    </Provider>
+  </Suspense>,
+  rootElement
+);
+```
 
 ## LICENSE
 

@@ -3,7 +3,7 @@
   "version": "0.0.7",
   "description": "data loader for React",
   "author": "naporin0624 <naporin0624@gmail.com>",
-  "homepage": "https://github.com/naporin0624/packages/",
+  "homepage": "https://github.com/naporin0624/packages/tree/main/packages/react-loader#react-loader",
   "license": "MIT",
   "main": "lib/index-cjs.js",
   "module": "lib/index-esm.js",
