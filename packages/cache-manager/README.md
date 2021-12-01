@@ -5,7 +5,7 @@ A simple function memoization management library.
 ## Usage
 
 ```typescript
-import { createCacheManager } from "@naporin0624/cache-manager";
+import { createCacheManager, parser } from "@naporin0624/cache-manager";
 
 let keyCount = 0;
 const buildKey = (a: number, b: string) => {
