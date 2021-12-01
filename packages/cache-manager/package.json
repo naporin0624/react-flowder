@@ -24,6 +24,16 @@
       "require": "./lib/react/index-cjs.js"
     }
   },
+  "typesVersions": {
+    "*": {
+      "react": ["lib/react/index.d.ts"]
+    }
+  },
+  "files": [
+    "README.md",
+    "lib",
+    "package.json"
+  ],
   "publishConfig": {
     "access": "public"
   },
