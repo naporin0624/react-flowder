@@ -25,6 +25,7 @@
 				"mode": "auto"
 			}
 		],
-		"editor.tabSize": 2
+		"editor.tabSize": 2,
+		"flow.enabled": false
 	}
 }

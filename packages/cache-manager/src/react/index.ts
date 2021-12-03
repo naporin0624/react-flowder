@@ -1,5 +1,5 @@
-export { Provider as CacheManageProvider } from "./Provider";
+export { Provider } from "./Provider";
 export { Context as CacheManageContext } from "./context";
-export { useCacheManager } from "./hooks";
+export { useCache } from "./hooks";
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Inject {}
+export interface DefaultCache {}

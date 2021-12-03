@@ -4,14 +4,20 @@ import stringify from "fast-json-stable-stringify";
 import { Option, parse, Config } from "./config";
 export { Config, parse };
 
-export type CacheManager<T> = {
+type CacheValue<T> = {
   [K in keyof T]: T[K] extends [infer U, Option] ? U : never;
+};
+
+export type CacheManager<T> = {
+  watch(): void;
+  stop(): void;
+  value: CacheValue<T>;
 };
 
 export function createCacheManager<T extends Record<string, [fn: (...args: any[]) => unknown, option: Option]>>(
   config: T,
   option?: { provider?: SimpleStore<string, [unknown, number]> }
-): CacheManager<T> & { watch(): void; stop(): void } {
+): CacheManager<T> {
   const store = option?.provider ?? createStore<string, [unknown, number]>();
 
   let dispose: (() => void) | null = null;
@@ -38,7 +44,7 @@ export function createCacheManager<T extends Record<string, [fn: (...args: any[]
     store.clear();
   };
 
-  const cacheFunctions: CacheManager<T> = {} as CacheManager<T>;
+  const caches: CacheValue<T> = {} as CacheValue<T>;
   for (const key in config) {
     const [fn] = config[key];
     const build: any = (...args: unknown[]) => {
@@ -51,8 +57,12 @@ export function createCacheManager<T extends Record<string, [fn: (...args: any[]
       store.set(cacheKey, [result, Date.now()]);
       return result;
     };
-    cacheFunctions[key] = build;
+    caches[key] = build;
   }
 
-  return Object.assign(cacheFunctions, { watch, stop });
+  return {
+    watch,
+    stop,
+    value: caches,
+  };
 }

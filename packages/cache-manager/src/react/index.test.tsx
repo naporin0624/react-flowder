@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { useCacheManager, CacheManageProvider } from ".";
+import { useCache, Provider } from ".";
 import { createStore } from "@naporin0624/simple-store";
 import { renderHook } from "@testing-library/react-hooks";
 
@@ -15,7 +15,7 @@ const inject = {
 declare module "." {
   type Custom = typeof inject;
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface Inject extends Custom {}
+  interface DefaultCache extends Custom {}
 }
 
 describe("hook test", () => {
@@ -25,12 +25,12 @@ describe("hook test", () => {
   });
 
   const wrapper: FC = ({ children }) => (
-    <CacheManageProvider value={inject} config={{ provider: cacheStore }}>
+    <Provider value={inject} config={{ provider: cacheStore }}>
       {children}
-    </CacheManageProvider>
+    </Provider>
   );
   test("Provider not found test", () => {
-    const { result } = renderHook(() => useCacheManager());
+    const { result } = renderHook(() => useCache());
 
     expect(result.error).toEqual(new Error("Provider is not found"));
   });
@@ -39,7 +39,7 @@ describe("hook test", () => {
     const subscribeSpy = jest.spyOn(cacheStore, "subscribe");
     const clearSpy = jest.spyOn(cacheStore, "clear");
 
-    const { unmount } = renderHook(() => useCacheManager(), { wrapper });
+    const { unmount } = renderHook(() => useCache(), { wrapper });
 
     expect(subscribeSpy.mock.calls.length).toEqual(1);
     unmount();

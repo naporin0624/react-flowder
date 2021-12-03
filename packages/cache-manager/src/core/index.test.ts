@@ -29,13 +29,13 @@ describe("validated test", () => {
 describe("createRoot test", () => {
   const cacheStore = createStore<string, [unknown, number]>();
   const validated = parse(config);
-  const root = createCacheManager(validated, { provider: cacheStore });
+  const { value: root, watch, stop } = createCacheManager(validated, { provider: cacheStore });
   beforeEach(() => {
-    root.watch();
+    watch();
     cacheStore.clear();
   });
   afterEach(() => {
-    root.stop();
+    stop();
   });
 
   test("return same object test", async () => {

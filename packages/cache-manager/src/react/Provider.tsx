@@ -2,11 +2,11 @@ import React, { FC, useEffect, useMemo } from "react";
 import { createCacheManager, parse } from "../core";
 import { Context } from "./context";
 
-import type { Inject } from ".";
+import type { DefaultCache } from ".";
 import type { SimpleStore } from "@naporin0624/simple-store";
 
 type Props = {
-  value: Inject;
+  value: DefaultCache;
   config?: {
     provider?: SimpleStore<string, [unknown, number]>;
   };
