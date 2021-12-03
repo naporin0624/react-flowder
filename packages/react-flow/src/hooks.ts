@@ -17,10 +17,11 @@ export const useFlow = <T>(key: string, $: Observable<T>): T | undefined => {
   }, [key, $, context]);
 
   useEffect(() => {
-    const cache: T | undefined = context.state.get(key);
+    let cache: T | undefined = context.state.get(key);
     const d = context.state.subscribe(() => {
       const next = context.state.get(key);
       if (next === cache) return;
+      cache = next;
       setState(next);
     });
 
