@@ -78,4 +78,17 @@ describe("index test", () => {
     const { result } = renderHook(() => useContext(FlowContext), { wrapper: ({ children }) => <Provider config={{ provider: state }}>{children}</Provider> });
     expect(result.current?.state).toEqual(state);
   });
+
+  test("initialValue test", () => {
+    const { result } = renderHook(() => useFlow("test", any, "initial"), { wrapper: Wrapper });
+    expect(result.current).toEqual("initial");
+    act(() => {
+      any.next(1);
+    });
+    expect(result.current).toEqual(1);
+    act(() => {
+      any.next(undefined);
+    });
+    expect(result.current).toEqual(undefined);
+  });
 });
