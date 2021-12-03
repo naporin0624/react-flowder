@@ -5,7 +5,7 @@ export type Flowder<T> = {
   source: Observable<T>;
 };
 
-let keyCount = 1;
+let keyCount = 0;
 export const flowder = <T>($: Observable<T>): Flowder<T> => {
   const key = `flowder__${++keyCount}`;
   return {

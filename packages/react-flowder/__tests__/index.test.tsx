@@ -12,7 +12,7 @@ describe("react-flowder test", () => {
   const key1 = flowder(timer);
   const key2 = flowder(timer);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const any = new BehaviorSubject<any>(1);
+  const any = new BehaviorSubject<unknown>(1);
   const anyKey = flowder(any);
 
   describe("flowder test", () => {
@@ -39,6 +39,10 @@ describe("react-flowder test", () => {
       await waitForNextUpdate();
       expect(result.current).toEqual(1);
       act(() => any.next(undefined));
+      /* FIXME: suspend 後の useFlow には値が入っていない.
+       * subscribe するのは ReactComponent の mount 後なので初期値は undefined
+       * そのあとに undefined が送られてきても再レンダリング抑制が働くので....
+       */
       expect(result.current).toEqual(undefined);
       act(() => any.next(null));
       expect(result.current).toEqual(null);
