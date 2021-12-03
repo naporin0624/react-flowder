@@ -10,10 +10,17 @@ export interface FlowRoot {
   state: SimpleStore<string, any>;
 }
 export const FlowContext = createContext<FlowRoot | null>(null);
-export const createFlowRoot = (): FlowRoot => {
-  const counter = createStore<string, number>();
-  const state = createStore<string, unknown>();
-  const disposer = createStore<string, Subscription>();
+
+type Props = {
+  state?: SimpleStore<string, unknown>;
+  counter?: Map<string, number>;
+  disposer?: Map<string, Subscription>;
+};
+
+export const createFlowRoot = (props?: Props): FlowRoot => {
+  const state = props?.state ?? createStore<string, unknown>();
+  const counter = props?.counter ?? new Map<string, number>();
+  const disposer = props?.disposer ?? new Map<string, Subscription>();
 
   const register: FlowRoot["register"] = (key, $) => {
     const count = counter.get(key) ?? 0;
