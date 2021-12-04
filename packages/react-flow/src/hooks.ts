@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { FlowContext } from "./context";
 
 import type { Observable } from "rxjs";
@@ -8,7 +8,9 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue: U): T
 export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   const context = useContext(FlowContext);
   if (context === null) throw new Error("FlowContext is not found");
-  const [state, setState] = useState(initialValue ?? context.state.get(key));
+  const initialState = useMemo(() => (context.state.has(key) ? context.state.get(key) : initialValue), [context.state, initialValue, key]);
+
+  const [state, setState] = useState(initialState);
 
   useEffect(() => {
     context.register(key, $);
@@ -19,9 +21,11 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   }, [key, $, context]);
 
   useEffect(() => {
-    let cache: T | U | undefined = initialValue ?? context.state.get(key);
+    let cache: T | U | undefined = initialState;
     const d = context.state.subscribe(() => {
-      const next = context.state.get(key);
+      const has = context.state.has(key);
+      const next = has ? context.state.get(key) : initialValue;
+
       if (next === cache) return;
       cache = next;
       setState(next);
@@ -30,7 +34,7 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
     return () => {
       d.unsubscribe();
     };
-  }, [context.state, initialValue, key]);
+  }, [context.state, initialState, initialValue, key]);
 
   return state;
 }

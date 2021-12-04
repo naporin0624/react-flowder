@@ -1,5 +1,5 @@
 import { createStore } from "@naporin0624/simple-store";
-import { createFlowRoot } from "../src/context";
+import { createFlowRoot } from "../src";
 import { Subject, Subscription } from "rxjs";
 
 const state = createStore<string, unknown>();
