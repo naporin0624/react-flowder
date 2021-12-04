@@ -1,6 +1,6 @@
 {
   "name": "@naporin0624/react-flowder",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "data loader for react",
   "keywords": [
     "react",
@@ -45,7 +45,7 @@
     "rxjs": "^7.4.0"
   },
   "dependencies": {
-    "@naporin0624/react-flow": "^0.0.8",
+    "@naporin0624/react-flow": "^0.0.9",
     "@naporin0624/react-loader": "^0.0.9"
   }
 }
