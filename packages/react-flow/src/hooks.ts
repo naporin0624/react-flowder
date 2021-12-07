@@ -21,6 +21,7 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   }, [key, $, context]);
 
   useEffect(() => {
+    setState(initialState);
     let cache: T | U | undefined = initialState;
     const d = context.state.subscribe(() => {
       const has = context.state.has(key);
