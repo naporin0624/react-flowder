@@ -1,11 +1,10 @@
 import { createStore } from "../src";
 
-let store = createStore<string, number>();
+const store = createStore<string, number>();
 
 describe("simple-store", () => {
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    store = createStore<string, number>();
+    store.clear();
   });
 
   it("initialize test", () => {
