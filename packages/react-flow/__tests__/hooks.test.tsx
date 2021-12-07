@@ -1,4 +1,4 @@
-import React, { FC, useContext } from "react";
+import React, { FC, useContext, useState } from "react";
 import { Subject } from "rxjs";
 import { Provider, useFlow, FlowContext } from "../src";
 import { act, cleanup, renderHook } from "@testing-library/react-hooks";
@@ -16,6 +16,79 @@ describe("hook test", () => {
   test("context not found", () => {
     const { result } = renderHook(() => useFlow("test", any));
     expect(result.error).toEqual(new Error("FlowContext is not found"));
+  });
+
+  test("change key test", () => {
+    const { result } = renderHook(
+      () => {
+        const [key, setKey] = useState("test");
+        const data = useFlow(key, any, "initial");
+        return { data, setKey };
+      },
+      { wrapper }
+    );
+
+    expect(result.current.data).toEqual("initial");
+    act(() => {
+      any.next(1);
+    });
+    expect(result.current.data).toEqual(1);
+
+    act(() => {
+      result.current.setKey("test1");
+    });
+    expect(result.current.data).toEqual("initial");
+  });
+
+  test("change $ test", () => {
+    const any1 = new Subject<unknown>();
+    const { result } = renderHook(
+      () => {
+        const [$, set$] = useState(any);
+        const [initial, setInitial] = useState("initial");
+        const data = useFlow("test", $, initial);
+        return { data, set$, setInitial };
+      },
+      { wrapper }
+    );
+
+    expect(result.current.data).toEqual("initial");
+    act(() => {
+      any.next(1);
+    });
+    expect(result.current.data).toEqual(1);
+
+    act(() => {
+      result.current.set$(any1);
+    });
+    expect(result.current.data).toEqual("initial");
+
+    act(() => {
+      any1.next(1);
+    });
+    expect(result.current.data).toEqual(1);
+  });
+
+  test("change initial test", () => {
+    const { result } = renderHook(
+      () => {
+        const [initial, setInitial] = useState("initial");
+        const data = useFlow("test", any, initial);
+        return { data, setInitial };
+      },
+      { wrapper }
+    );
+
+    expect(result.current.data).toEqual("initial");
+    act(() => {
+      result.current.setInitial("test");
+    });
+    expect(result.current.data).toEqual("test");
+
+    act(() => {
+      any.next(1);
+    });
+    expect(result.current.data).toEqual(1);
   });
 
   test("sync data", () => {
