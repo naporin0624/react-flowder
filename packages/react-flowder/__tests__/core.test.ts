@@ -1,16 +1,22 @@
-import { interval, isObservable } from "rxjs";
-import { flowder } from "../src/core";
+import { EMPTY, interval, map } from "rxjs";
+import { flowder, getSource } from "../src/core";
 
 const timer = interval();
-const key1 = flowder(timer);
-const key2 = flowder(timer);
+const timerFlowder = flowder(() => timer);
+const emptyFlowder = flowder(() => EMPTY);
+const flowderWithArgs = flowder((a: number) => timer.pipe(map((t) => t + a)));
 
 describe("flowder test", () => {
   test("unique key test", () => {
-    expect(key1.toString() === key2.toString()).toBe(false);
+    expect(timerFlowder()).toEqual(timerFlowder());
+    expect(timerFlowder()).not.toEqual(emptyFlowder());
+
+    expect(flowderWithArgs(1)).toEqual(flowderWithArgs(1));
+    expect(flowderWithArgs(1)).not.toEqual(flowderWithArgs(2));
   });
-  test("source property test", () => {
-    expect(isObservable(key1.source)).toBe(true);
-    expect(isObservable(key2.source)).toBe(true);
+  test("get source test", () => {
+    expect(getSource(timerFlowder())).toEqual(timer);
+    expect(getSource(timerFlowder())).not.toEqual(emptyFlowder());
+    expect(getSource(timerFlowder())).not.toEqual(flowderWithArgs(0));
   });
 });

@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@naporin0624/react-flow": "^0.0.11",
-    "@naporin0624/react-loader": "^0.0.10"
+    "@naporin0624/react-loader": "^0.0.10",
+    "fast-json-stable-stringify": "^2.1.0"
   }
 }
