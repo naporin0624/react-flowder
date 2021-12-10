@@ -1,12 +1,15 @@
+import React, { FC, useMemo } from "react";
+import { FlowContext, createFlowRoot, Status } from "./context";
+
 import type { SimpleStore } from "@naporin0624/simple-store";
-import React, { FC } from "react";
-import { FlowContext, createFlowRoot } from "./context";
 
 type Props = {
   config?: {
-    provider?: SimpleStore<string, unknown>;
+    provider?: SimpleStore<string, Status>;
   };
 };
 export const Provider: FC<Props> = ({ children, config }) => {
-  return <FlowContext.Provider value={createFlowRoot({ state: config?.provider })}>{children}</FlowContext.Provider>;
+  const value = useMemo(() => createFlowRoot({ state: config?.provider }), [config?.provider]);
+
+  return <FlowContext.Provider value={value}>{children}</FlowContext.Provider>;
 };

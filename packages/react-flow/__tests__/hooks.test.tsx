@@ -1,6 +1,6 @@
 import React, { FC, useContext, useState } from "react";
-import { Subject } from "rxjs";
-import { Provider, useFlow, FlowContext } from "../src";
+import { concatMap, count, of, Subject, throwError } from "rxjs";
+import { Provider, useFlow, FlowContext, Status } from "../src";
 import { act, cleanup, renderHook } from "@testing-library/react-hooks";
 import { createStore } from "@naporin0624/simple-store";
 
@@ -22,22 +22,22 @@ describe("hook test", () => {
     const { result } = renderHook(
       () => {
         const [key, setKey] = useState("test");
-        const data = useFlow(key, any, "initial");
-        return { data, setKey };
+        const result = useFlow(key, any, "initial");
+        return { result, setKey };
       },
       { wrapper }
     );
 
-    expect(result.current.data).toEqual("initial");
+    expect(result.current.result).toEqual("initial");
     act(() => {
       any.next(1);
     });
-    expect(result.current.data).toEqual(1);
+    expect(result.current.result).toEqual(1);
 
     act(() => {
       result.current.setKey("test1");
     });
-    expect(result.current.data).toEqual("initial");
+    expect(result.current.result).toEqual("initial");
   });
 
   test("change $ test", () => {
@@ -46,27 +46,27 @@ describe("hook test", () => {
       () => {
         const [$, set$] = useState(any);
         const [initial, setInitial] = useState("initial");
-        const data = useFlow("test", $, initial);
-        return { data, set$, setInitial };
+        const result = useFlow("test", $, initial);
+        return { result, set$, setInitial };
       },
       { wrapper }
     );
 
-    expect(result.current.data).toEqual("initial");
+    expect(result.current.result).toEqual("initial");
     act(() => {
       any.next(1);
     });
-    expect(result.current.data).toEqual(1);
+    expect(result.current.result).toEqual(1);
 
     act(() => {
       result.current.set$(any1);
     });
-    expect(result.current.data).toEqual("initial");
+    expect(result.current.result).toEqual("initial");
 
     act(() => {
       any1.next(1);
     });
-    expect(result.current.data).toEqual(1);
+    expect(result.current.result).toEqual(1);
   });
 
   test("change initial test", () => {
@@ -122,9 +122,16 @@ describe("hook test", () => {
 });
 
 describe("external state test", () => {
-  const state = createStore<string, unknown>();
+  const state = createStore<string, Status>();
   const wrapper: FC = ({ children }) => <Provider config={{ provider: state }}>{children}</Provider>;
   const key = "test";
+
+  const anyWithError$ = any.pipe(
+    concatMap((value) => {
+      if (value instanceof Error) return throwError(() => value);
+      return of(value);
+    })
+  );
 
   afterEach(() => {
     jest.clearAllMocks();
@@ -138,23 +145,23 @@ describe("external state test", () => {
   });
 
   test("set value from external store", () => {
-    state.set(key, 1);
+    state.set(key, { type: "success", payload: 1 });
     const { result } = renderHook(() => useFlow(key, any), { wrapper });
     expect(result.current).toEqual(1);
 
     act(() => {
-      state.set(key, 2);
+      state.set(key, { type: "success", payload: 2 });
     });
     expect(result.current).toEqual(2);
   });
 
   test("initialValue test when set value from external store", () => {
-    state.set(key, 1);
+    state.set(key, { type: "success", payload: 1 });
     const { result } = renderHook(() => useFlow(key, any, "initial"), { wrapper });
     expect(result.current).toEqual(1);
 
     act(() => {
-      state.set(key, undefined);
+      state.set(key, { type: "success", payload: undefined });
     });
     expect(result.current).toEqual(undefined);
 
@@ -164,8 +171,27 @@ describe("external state test", () => {
     expect(result.current).toEqual("initial");
 
     act(() => {
-      state.set(key, 1);
+      state.set(key, { type: "success", payload: 1 });
     });
     expect(result.current).toEqual(1);
+  });
+
+  test("error observable test", async () => {
+    const { result } = renderHook(() => useFlow("test", anyWithError$), { wrapper });
+    act(() => {
+      any.next(1);
+    });
+    expect(result.current).toEqual(1);
+    const error = new Error("error");
+    act(() => {
+      any.next(error);
+    });
+    expect(result.error).toEqual(error);
+
+    act(() => {
+      any.next(2);
+    });
+    expect(result.error).toEqual(error);
+    expect(state.get("test")).toEqual(undefined);
   });
 });

@@ -8,9 +8,13 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue: U): T
 export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   const context = useContext(FlowContext);
   if (context === null) throw new Error("FlowContext is not found");
-  const initialState = useMemo(() => (context.state.has(key) ? context.state.get(key) : initialValue), [context.state, initialValue, key]);
+  const initialState = useMemo(() => {
+    const target = context.state.get(key);
+    return target?.type === "success" ? target.payload : initialValue;
+  }, [context.state, key, initialValue]);
 
   const [state, setState] = useState(initialState);
+  const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
     context.register(key, $);
@@ -21,21 +25,34 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   }, [key, $, context]);
 
   useEffect(() => {
-    setState(initialState);
-    let cache: T | U | undefined = initialState;
-    const d = context.state.subscribe(() => {
-      const has = context.state.has(key);
-      const next = has ? context.state.get(key) : initialValue;
+    const getInitialValue = (): T | U | undefined => {
+      const target = context.state.get(key);
+      return target?.type === "success" ? target.payload : initialValue;
+    };
 
-      if (next === cache) return;
-      cache = next;
-      setState(next);
+    setState(getInitialValue);
+    let cache: T | U | undefined = getInitialValue();
+
+    const d = context.state.subscribe(() => {
+      const target = context.state.get(key);
+      const next = getInitialValue();
+      const update = (next: T | U | undefined) => {
+        if (next === cache) return;
+        cache = next;
+        setState(next);
+        setError(undefined);
+      };
+
+      if (target?.type === "success") return update(target.payload);
+      if (target?.type === "error") return setError(target.payload);
+      return update(next);
     });
 
     return () => {
       d.unsubscribe();
     };
-  }, [context.state, initialState, initialValue, key]);
+  }, [context, initialState, key, $, initialValue]);
 
+  if (error) throw error;
   return state;
 }

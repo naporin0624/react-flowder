@@ -3,22 +3,32 @@ import { createStore, SimpleStore } from "@naporin0624/simple-store";
 
 import type { Observable, Subscription } from "rxjs";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Status<T = any> =
+  | {
+      type: "success";
+      payload: T;
+    }
+  | {
+      type: "error";
+      payload: Error;
+    };
+
 export interface FlowRoot {
   register(key: string, $: Observable<unknown>): void;
   lift(key: string): void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  state: SimpleStore<string, any>;
+  state: SimpleStore<string, Status>;
 }
 export const FlowContext = createContext<FlowRoot | null>(null);
 
 type Props = {
-  state?: SimpleStore<string, unknown>;
+  state?: SimpleStore<string, Status>;
   counter?: Map<string, number>;
   disposer?: Map<string, Subscription>;
 };
 
 export const createFlowRoot = (props?: Props): FlowRoot => {
-  const state = props?.state ?? createStore<string, unknown>();
+  const state = props?.state ?? createStore<string, Status>();
   const counter = props?.counter ?? new Map<string, number>();
   const disposer = props?.disposer ?? new Map<string, Subscription>();
 
@@ -27,8 +37,13 @@ export const createFlowRoot = (props?: Props): FlowRoot => {
     counter.set(key, count + 1);
     if (count > 0) return;
 
-    const dispose = $.subscribe((value) => {
-      state.set(key, value);
+    const dispose = $.pipe().subscribe({
+      next(value) {
+        state.set(key, { type: "success", payload: value });
+      },
+      error(err) {
+        state.set(key, { type: "error", payload: err });
+      },
     });
     disposer.set(key, dispose);
   };

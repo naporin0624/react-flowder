@@ -1,8 +1,8 @@
 import { createStore } from "@naporin0624/simple-store";
-import { createFlowRoot } from "../src";
-import { Subject, Subscription } from "rxjs";
+import { createFlowRoot, Status } from "../src";
+import { Subject, Subscription, throwError } from "rxjs";
 
-const state = createStore<string, unknown>();
+const state = createStore<string, Status>();
 const counter = new Map<string, number>();
 const disposer = new Map<string, Subscription>();
 
@@ -52,5 +52,11 @@ describe("context test", () => {
 
     flowRoot.lift(key);
     expect(counter.get(key)).toBe(0);
+  });
+
+  const err$ = throwError(() => new Error("error"));
+  test("error observable test", () => {
+    flowRoot.register(key, err$);
+    expect(state.get(key)).toEqual({ type: "error", payload: new Error("error") });
   });
 });
