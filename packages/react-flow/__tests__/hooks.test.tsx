@@ -1,5 +1,5 @@
 import React, { FC, useContext, useState } from "react";
-import { concatMap, count, of, Subject, throwError } from "rxjs";
+import { concatMap, of, Subject, throwError } from "rxjs";
 import { Provider, useFlow, FlowContext, Status } from "../src";
 import { act, cleanup, renderHook } from "@testing-library/react-hooks";
 import { createStore } from "@naporin0624/simple-store";
