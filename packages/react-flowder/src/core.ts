@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import stringify from "fast-json-stable-stringify";
-import type { Observable } from "rxjs";
+import { isObservable, Observable } from "rxjs";
+
+type ObservableBuilder<Args extends unknown[], T> = (...args: Args) => Observable<T>;
 
 declare const __flowderKey: unique symbol;
 export type Flowder<T> = string & {
   [__flowderKey]?: T;
 };
-
-type FlowderBuilder<Args extends unknown[], T> = (...args: Args) => Flowder<T>;
-type ObservableBuilder<Args extends unknown[], T> = (...args: Args) => Observable<T>;
+export interface FlowderBuilder<Args extends unknown[], T> {
+  (...args: Args): Flowder<T>;
+  toString(): string;
+}
 
 const sources = new Map<string, Observable<any>>();
 
@@ -22,12 +25,17 @@ export const flowder = <Args extends unknown[], T>(builder: ObservableBuilder<Ar
     return flowderKey;
   };
 
-  return flowderBuilder;
+  return Object.assign(flowderBuilder, {
+    toString() {
+      return key;
+    },
+  });
 };
 
 export const getSource = <T>(flowder: Flowder<T>): Observable<T> => {
   const $ = sources.get(flowder.toString());
   if (!$) throw new Error("This flowder has not been registered.");
+  if (!isObservable($)) throw new Error("The registered Object is not an Observable.");
 
-  return $;
+  return $ as Observable<T>;
 };

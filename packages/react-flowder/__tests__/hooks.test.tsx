@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { flowder } from "../src/core";
-import { useFlowder } from "../src/hooks";
+import { useFlowder, useFlowderContext, useReset } from "../src/hooks";
 import { Provider } from "../src/Provider";
 import { act, cleanup, renderHook } from "@testing-library/react-hooks";
 import { interval, BehaviorSubject, map, Subject } from "rxjs";
@@ -14,7 +14,10 @@ const number = new Subject<number>();
 const flowderWithArgs = flowder((offset: number) => number.pipe(map((t) => t + offset)));
 
 describe("useFlowder test", () => {
-  afterEach(cleanup);
+  afterEach(() => {
+    cleanup();
+    any.next(1);
+  });
   const wrapper: FC = ({ children }) => <Provider>{children}</Provider>;
 
   test("suspend & data sync test", async () => {
@@ -58,5 +61,78 @@ describe("useFlowder test", () => {
   test("context not found test", () => {
     const { result } = renderHook(() => useFlowder(anyFlowder()));
     expect(result.error).toEqual(new Error("Provider not found"));
+  });
+});
+
+describe("useReset test", () => {
+  afterEach(() => {
+    cleanup();
+    any.next(1);
+  });
+  const wrapper: FC = ({ children }) => <Provider>{children}</Provider>;
+  const number = new BehaviorSubject<number>(0);
+  const flowderWithArgs = flowder((offset: number) => number.pipe(map((t) => t + offset)));
+
+  test("resetAll test", async () => {
+    const { result, waitForNextUpdate } = renderHook(
+      () => {
+        useFlowder(anyFlowder());
+        const context = useFlowderContext();
+        const reset = useReset();
+        return { context, reset };
+      },
+      { wrapper }
+    );
+
+    await waitForNextUpdate();
+    expect(result.current.context.cache.size).not.toEqual(0);
+    expect(result.current.context.flow.state.size).not.toEqual(0);
+
+    result.current.reset();
+    expect(result.current.context.cache.size).toEqual(0);
+    expect(result.current.context.flow.state.size).toEqual(0);
+  });
+
+  test("resetWithKey test (flowderBuilder)", async () => {
+    const { result, waitForNextUpdate } = renderHook(
+      () => {
+        useFlowder(anyFlowder());
+        useFlowder(timerFlowder());
+        const context = useFlowderContext();
+        const reset = useReset(anyFlowder);
+        return { context, reset };
+      },
+      { wrapper }
+    );
+
+    await waitForNextUpdate();
+    expect(Array.from(result.current.context.cache.keys()).some((key) => key.startsWith(anyFlowder().toString()))).toEqual(true);
+    expect(Array.from(result.current.context.flow.state.keys()).some((key) => key.startsWith(anyFlowder().toString()))).toEqual(true);
+
+    result.current.reset();
+    expect(Array.from(result.current.context.cache.keys()).some((key) => key.startsWith(anyFlowder().toString()))).toEqual(false);
+    expect(Array.from(result.current.context.flow.state.keys()).some((key) => key.startsWith(anyFlowder().toString()))).toEqual(false);
+  });
+
+  test("resetWithKey test (flowder)", async () => {
+    const { result, waitForNextUpdate } = renderHook(
+      () => {
+        useFlowder(anyFlowder());
+        useFlowder(flowderWithArgs(0));
+        useFlowder(flowderWithArgs(1));
+        const context = useFlowderContext();
+        const reset = useReset(flowderWithArgs(1));
+        return { context, reset };
+      },
+      { wrapper }
+    );
+
+    await waitForNextUpdate();
+    expect(Array.from(result.current.context.cache.keys()).some((key) => key === flowderWithArgs(1).toString())).toEqual(true);
+    expect(Array.from(result.current.context.flow.state.keys()).some((key) => key === flowderWithArgs(1).toString())).toEqual(true);
+
+    result.current.reset();
+    expect(Array.from(result.current.context.cache.keys()).some((key) => key === flowderWithArgs(1).toString())).toEqual(false);
+    expect(Array.from(result.current.context.flow.state.keys()).some((key) => key === flowderWithArgs(1).toString())).toEqual(false);
   });
 });

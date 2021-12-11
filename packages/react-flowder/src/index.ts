@@ -1,3 +1,3 @@
 export { flowder, Flowder } from "./core";
-export { useFlowder } from "./hooks";
+export { useFlowder, useReset } from "./hooks";
 export { Provider } from "./Provider";
