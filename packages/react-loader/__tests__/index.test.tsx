@@ -27,7 +27,7 @@ describe("react-loader test", () => {
 
     test("provider equal hook", async () => {
       const key = "timeout";
-      const { result, waitForNextUpdate } = renderHook(() => useLoader(key, timeout(10)), { wrapper });
+      const { result, waitForNextUpdate } = renderHook(() => useLoader(key, () => timeout(10)), { wrapper });
       expect(result.current).toEqual(undefined);
       await waitForNextUpdate();
 
@@ -37,7 +37,7 @@ describe("react-loader test", () => {
 
     test("change cacheStore after rerender test", async () => {
       const key = "timeout";
-      const { result, waitForNextUpdate, rerender } = renderHook(() => useLoader(key, timeout(10)), { wrapper });
+      const { result, waitForNextUpdate, rerender } = renderHook(() => useLoader(key, () => timeout(10)), { wrapper });
       expect(result.current).toEqual(undefined);
       await waitForNextUpdate();
       expect(result.current).toEqual(10);
@@ -56,7 +56,7 @@ describe("react-loader test", () => {
     test("useCacheKey test", async () => {
       const { result, waitForNextUpdate } = renderHook(
         () => {
-          useLoader("timeout", timeout(20, false));
+          useLoader("timeout", () => timeout(20, false));
           return useCacheKey();
         },
         { wrapper }
@@ -68,7 +68,7 @@ describe("react-loader test", () => {
     test("useCache test", async () => {
       const { result, waitForNextUpdate } = renderHook(
         () => {
-          useLoader("timeout", timeout(20, false));
+          useLoader("timeout", () => timeout(20, false));
           return useCache();
         },
         { wrapper }
@@ -78,7 +78,7 @@ describe("react-loader test", () => {
       expect(result.current.get("timeout")).toEqual({ payload: 20, type: "success" });
     });
     test("useLoader test", async () => {
-      const { result, waitForNextUpdate } = renderHook(() => useLoader("timeout", timeout(10)), { wrapper: wrapper });
+      const { result, waitForNextUpdate } = renderHook(() => useLoader("timeout", () => timeout(10)), { wrapper: wrapper });
       await waitForNextUpdate();
 
       expect(result.current).toBe(10);
@@ -88,7 +88,7 @@ describe("react-loader test", () => {
       const { result, waitForNextUpdate } = renderHook(
         () => {
           const [count, setCount] = useState(10);
-          const data = useLoader(`timeout__${count}`, timeout(count));
+          const data = useLoader(`timeout__${count}`, () => timeout(count));
           return [data, setCount] as const;
         },
         { wrapper: wrapper }
@@ -101,7 +101,7 @@ describe("react-loader test", () => {
       expect(result.current[0]).toBe(20);
     });
     test("useLoader error occurred test", async () => {
-      const { result, waitForNextUpdate } = renderHook(() => useLoader("reject", timeout(0, true)), { wrapper: wrapper });
+      const { result, waitForNextUpdate } = renderHook(() => useLoader("reject", () => timeout(0, true)), { wrapper: wrapper });
       await waitForNextUpdate();
       return expect(result.error).toEqual(new Error("error"));
     });

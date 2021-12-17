@@ -20,7 +20,7 @@ const timeout = (ms: number) => {
 
 const App = () =>  {
   const [count, setCount] = useState(100);
-  const data = useLoader(`timeout_${count}`, timeout(count));
+  const data = useLoader(`timeout_${count}`, () => timeout(count));
 
   return (
     <div>
