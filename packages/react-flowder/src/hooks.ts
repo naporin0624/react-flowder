@@ -16,9 +16,9 @@ export const useFlowderContext = () => {
 export const useFlowder = <T>(flowder: Flowder<T>): T => {
   useFlowderContext();
   const $ = useMemo(() => getSource(flowder), [flowder]);
-  const p = useMemo(() => firstValueFrom($), [$]);
+  const loader = useCallback(() => firstValueFrom($), [$]);
 
-  return useFlow(flowder, $, useLoader(flowder, p));
+  return useFlow(flowder, $, useLoader(flowder, loader));
 };
 
 export function useReset(): () => void;
