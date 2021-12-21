@@ -8,6 +8,8 @@ export const useLoader = <T extends Promise<unknown>>(key: string, loader: () =>
   const cache = cacheStore.get(key);
   if (cache) {
     switch (cache.type) {
+      case "pending":
+        throw cache.payload;
       case "success":
         return cache.payload;
       case "error":
@@ -15,9 +17,11 @@ export const useLoader = <T extends Promise<unknown>>(key: string, loader: () =>
     }
   }
 
-  throw loader()
+  const promise = loader()
     .then((payload) => cacheStore.set(key, { type: "success", payload }))
     .catch((payload) => cacheStore.set(key, { type: "error", payload }));
+  cacheStore.set(key, { type: "pending", payload: promise });
+  throw promise;
 };
 
 export const useCacheKey = (): string[] => {

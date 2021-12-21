@@ -4,6 +4,10 @@ import { createStore, SimpleStore } from "@naporin0624/simple-store";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Status<T = any> =
   | {
+      type: "pending";
+      payload: Promise<unknown>;
+    }
+  | {
       type: "success";
       payload: T;
     }
