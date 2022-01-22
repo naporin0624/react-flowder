@@ -1,4 +1,5 @@
-type Listener = () => void;
+type Method = "set" | "clear" | "delete";
+type Listener = <K>(method: Method, key?: K) => void;
 
 export interface SimpleStore<K, V> extends Map<K, V> {
   subscribe(listener: Listener): {
@@ -10,17 +11,17 @@ class SimpleStoreImpl<K, V> extends Map<K, V> implements SimpleStore<K, V> {
   private listeners: Map<symbol, Listener> = new Map();
   set(key: K, value: V) {
     const r = super.set(key, value);
-    this.runListeners();
+    this.runListeners("set", key);
     return r;
   }
   delete(key: K) {
     const r = super.delete(key);
-    this.runListeners();
+    this.runListeners("delete", key);
     return r;
   }
   clear() {
     const r = super.clear();
-    this.runListeners();
+    this.runListeners("clear");
     return r;
   }
   subscribe(listener: Listener) {
@@ -31,8 +32,8 @@ class SimpleStoreImpl<K, V> extends Map<K, V> implements SimpleStore<K, V> {
     return { unsubscribe };
   }
 
-  private runListeners() {
-    this.listeners.forEach((listener) => listener());
+  private runListeners(method: Method, key?: K) {
+    this.listeners.forEach((listener) => listener(method, key));
   }
 }
 
