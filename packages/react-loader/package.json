@@ -1,6 +1,6 @@
 {
   "name": "@naporin0624/react-loader",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "data loader for React",
   "author": "naporin0624 <naporin0624@gmail.com>",
   "homepage": "https://github.com/naporin0624/packages/tree/main/packages/react-loader#react-loader",
@@ -38,6 +38,6 @@
     "react-dom": "^17.0.2"
   },
   "dependencies": {
-    "@naporin0624/simple-store": "^0.0.6"
+    "@naporin0624/simple-store": "^0.0.7"
   }
 }
