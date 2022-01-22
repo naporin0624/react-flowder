@@ -36,6 +36,6 @@ class SimpleStoreImpl<K, V> extends Map<K, V> implements SimpleStore<K, V> {
   }
 }
 
-export const createStore = <K, V>(): SimpleStoreImpl<K, V> => {
+export const createStore = <K, V>(): SimpleStore<K, V> => {
   return new SimpleStoreImpl();
 };
