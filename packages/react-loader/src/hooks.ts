@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { CacheContext, CacheStore } from "./cache";
 
 export const useLoader = <T extends Promise<unknown>>(key: string, loader: () => T): T extends Promise<infer U> ? U : never => {
@@ -22,6 +22,18 @@ export const useLoader = <T extends Promise<unknown>>(key: string, loader: () =>
     .catch((payload) => cacheStore.set(key, { type: "error", payload }));
   cacheStore.set(key, { type: "pending", payload: promise });
   throw promise;
+};
+
+export const usePrefetch = <T>(key: string, loader: () => Promise<T>): (() => Promise<void>) => {
+  const cacheStore = useContext(CacheContext);
+  return useCallback(async () => {
+    try {
+      const payload = await loader();
+      cacheStore?.set(key, { type: "success", payload });
+    } catch (error) {
+      cacheStore?.set(key, { type: "error", payload: error instanceof Error ? error : new Error(JSON.stringify(error)) });
+    }
+  }, [cacheStore, key, loader]);
 };
 
 export const useCacheKey = (): string[] => {

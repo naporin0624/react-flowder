@@ -1,6 +1,6 @@
 import React, { FC, useState } from "react";
 import { act, renderHook, cleanup } from "@testing-library/react-hooks";
-import { Cache, useLoader, useCacheKey, useCache, createCacheStore } from "../src";
+import { Cache, useLoader, useCacheKey, useCache, createCacheStore, usePrefetch } from "../src";
 
 const timeout = (ms = 10, error?: boolean): Promise<number> => {
   return new Promise((resolve, reject) =>
@@ -104,6 +104,42 @@ describe("react-loader test", () => {
       const { result, waitForNextUpdate } = renderHook(() => useLoader("reject", () => timeout(0, true)), { wrapper: wrapper });
       await waitForNextUpdate();
       return expect(result.error).toEqual(new Error("error"));
+    });
+
+    describe("usePrefetch", () => {
+      test("usePrefetch success", async () => {
+        const { result, waitFor } = renderHook(
+          () => {
+            const prefetch = usePrefetch("test", () => timeout(10));
+            const cache = useCache();
+            return { prefetch, cache };
+          },
+          { wrapper }
+        );
+        act(() => {
+          result.current.prefetch();
+        });
+        await waitFor(() => result.current.cache.get("test")?.payload !== undefined);
+
+        expect(result.current.cache.get("test")).toEqual({ payload: 10, type: "success" });
+      });
+
+      test("usePrefetch error", async () => {
+        const { result, waitFor } = renderHook(
+          () => {
+            const prefetch = usePrefetch("test", () => timeout(10, true));
+            const cache = useCache();
+            return { prefetch, cache };
+          },
+          { wrapper }
+        );
+        act(() => {
+          result.current.prefetch();
+        });
+        await waitFor(() => result.current.cache.get("test")?.payload !== undefined);
+
+        expect(result.current.cache.get("test")).toEqual({ payload: new Error("error"), type: "error" });
+      });
     });
   });
 });
