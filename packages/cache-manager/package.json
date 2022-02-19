@@ -1,6 +1,6 @@
 {
   "name": "@naporin0624/cache-manager",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A simple function memoization management library.",
   "keywords": [
     "memo",
@@ -59,7 +59,7 @@
     "react-dom": "^17.0.2"
   },
   "dependencies": {
-    "@naporin0624/simple-store": "^0.1.0",
+    "@naporin0624/simple-store": "^0.1.1",
     "fast-json-stable-stringify": "^2.1.0"
   },
   "license": "MIT"
