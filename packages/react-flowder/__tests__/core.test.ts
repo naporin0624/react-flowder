@@ -1,18 +1,18 @@
 import { EMPTY, interval, map, Observable } from "rxjs";
-import { flowder, getSource } from "../src/core";
+import { datasource, DatasourceKey, getSource } from "../src/core";
 
 const timer = interval();
-const timerFlowder = flowder(() => timer);
-const emptyFlowder = flowder(() => EMPTY);
-const flowderWithArgs = flowder((a: number) => timer.pipe(map((t) => t + a)));
+const timerFlowder = datasource(() => timer);
+const emptyFlowder = datasource(() => EMPTY);
+const flowderWithArgs = datasource((a: number) => timer.pipe(map((t) => t + a)));
 
-const notObservableFlowder = flowder(() => 1 as unknown as Observable<never>);
+const notObservableFlowder = datasource(() => 1 as unknown as Observable<never>);
 
 describe("flowder test", () => {
   test("key test", () => {
     expect(typeof timerFlowder.toString).toEqual("function");
     expect(typeof timerFlowder.toString()).toEqual("string");
-    expect(timerFlowder.toString().startsWith("flowder__")).toEqual(true);
+    expect(timerFlowder.toString().startsWith("datasource__")).toEqual(true);
   });
   test("unique key test", () => {
     expect(timerFlowder()).toEqual(timerFlowder());
@@ -31,6 +31,6 @@ describe("flowder test", () => {
   });
 
   test("change key test", () => {
-    expect(() => getSource("")).toThrowError(new Error("This flowder has not been registered."));
+    expect(() => getSource("" as DatasourceKey<unknown>)).toThrowError(new Error("This flowder has not been registered."));
   });
 });

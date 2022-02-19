@@ -1,3 +1,3 @@
-export { flowder, Flowder } from "./core";
-export { useFlowder, useReset } from "./hooks";
+export { datasource, DatasourceKey } from "./core";
+export { useReadData, useReset, usePrefetch } from "./hooks";
 export { Provider } from "./Provider";

@@ -2,38 +2,36 @@
 import stringify from "fast-json-stable-stringify";
 import { isObservable, Observable } from "rxjs";
 
-type ObservableBuilder<Args extends unknown[], T> = (...args: Args) => Observable<T>;
+type Resource<Args extends unknown[], T> = (...args: Args) => Observable<T>;
 
-declare const __flowderKey: unique symbol;
-export type Flowder<T> = string & {
-  [__flowderKey]?: T;
+declare const $datasource: unique symbol;
+export type DatasourceKey<T> = string & {
+  [$datasource]: T;
 };
-export interface FlowderBuilder<Args extends unknown[], T> {
-  (...args: Args): Flowder<T>;
+export interface DatasourceBuilder<Args extends unknown[], T> {
+  (...args: Args): DatasourceKey<T>;
   toString(): string;
 }
 
 const sources = new Map<string, Observable<any>>();
 
 let keyCount = 0;
-export const flowder = <Args extends unknown[], T>(builder: ObservableBuilder<Args, T>): FlowderBuilder<Args, T> => {
-  const key = `flowder__${++keyCount}`;
-  const flowderBuilder = (...args: Args) => {
-    const flowderKey = `${key}:${stringify(args)}`;
-    if (!sources.has(flowderKey)) sources.set(flowderKey, builder(...args));
+export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T>): DatasourceBuilder<Args, T> => {
+  const id = `datasource__${++keyCount}`;
+  const builder = (...args: Args): DatasourceKey<T> => {
+    const key = `${id}:${stringify(args)}` as DatasourceKey<T>;
+    if (!sources.has(key)) sources.set(key, resource(...args));
 
-    return flowderKey;
+    return key;
   };
 
-  return Object.assign(flowderBuilder, {
-    toString() {
-      return key;
-    },
+  return Object.assign(builder, {
+    toString: () => id,
   });
 };
 
-export const getSource = <T>(flowder: Flowder<T>): Observable<T> => {
-  const $ = sources.get(flowder.toString());
+export const getSource = <T>(datasource: DatasourceKey<T>): Observable<T> => {
+  const $ = sources.get(datasource.toString());
   if (!$) throw new Error("This flowder has not been registered.");
   if (!isObservable($)) throw new Error("The registered Object is not an Observable.");
 
