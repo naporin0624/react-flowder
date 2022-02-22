@@ -1,8 +1,8 @@
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React, { Suspense } from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
 
-import '@codesandbox/sandpack-react/dist/index.css';
+import "@codesandbox/sandpack-react/dist/index.css";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -10,7 +10,7 @@ ReactDOM.render(
       <App />
     </Suspense>
   </React.StrictMode>,
-  document.getElementById('root'),
+  document.getElementById("root"),
 );
 
 // Hot Module Replacement (HMR) - Remove this snippet to remove HMR.

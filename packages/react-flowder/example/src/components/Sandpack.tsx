@@ -8,10 +8,10 @@ import {
   SandpackProps,
   SandpackProvider,
   SandpackProviderProps,
-} from '@codesandbox/sandpack-react';
-import React from 'react';
+} from "@codesandbox/sandpack-react";
+import React, { FC, memo } from "react";
 
-export const Sandpack: React.FC<SandpackProps> = (props) => {
+const Sandpack: FC<SandpackProps> = (props) => {
   // Combine files with customSetup to create the user input structure
   const userInputSetup = props.files
     ? {
@@ -94,3 +94,5 @@ export const Sandpack: React.FC<SandpackProps> = (props) => {
     </SandpackProvider>
   );
 };
+
+export default memo(Sandpack);

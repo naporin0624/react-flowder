@@ -1,11 +1,11 @@
-import React, { memo, VFC } from 'react';
-import { Sandpack } from '../components/Sandpack';
+import React, { memo, VFC } from "react";
+import Sandpack from "../components/Sandpack";
 
 const dependencies = {
-  react: '17.0.2',
-  'react-dom': '17.0.2',
-  rxjs: '^7.5.4',
-  '@naporin0624/react-flowder': '^2.0.0',
+  react: "17.0.2",
+  "react-dom": "17.0.2",
+  rxjs: "^7.5.4",
+  "@naporin0624/react-flowder": "^2.0.0",
 };
 
 const IndexPage: VFC = () => {
@@ -14,7 +14,7 @@ const IndexPage: VFC = () => {
       <h1>Simple Usage</h1>
       <Sandpack
         template="react-ts"
-        customSetup={{ dependencies, files: { '/App.tsx': SAMPLE_CODE } }}
+        customSetup={{ dependencies, files: { "/App.tsx": SAMPLE_CODE } }}
         theme="sandpack-dark"
         options={{ editorHeight: 650 }}
       />

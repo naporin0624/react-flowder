@@ -1,12 +1,12 @@
-import React, { memo, VFC } from 'react';
-import { Sandpack } from '../components/Sandpack';
+import React, { memo, VFC } from "react";
+import Sandpack from "../components/Sandpack";
 
 const dependencies = {
-  react: '17.0.2',
-  'react-dom': '17.0.2',
-  rxjs: '^7.5.4',
-  '@naporin0624/react-flowder': '^2.0.0',
-  'react-error-boundary': '^3.1.4',
+  react: "17.0.2",
+  "react-dom": "17.0.2",
+  rxjs: "^7.5.4",
+  "@naporin0624/react-flowder": "^2.0.0",
+  "react-error-boundary": "^3.1.4",
 };
 
 const ErrorPage: VFC = () => {
@@ -19,7 +19,7 @@ const ErrorPage: VFC = () => {
       </p>
       <Sandpack
         template="react-ts"
-        customSetup={{ dependencies, files: { '/App.tsx': SAMPLE_CODE } }}
+        customSetup={{ dependencies, files: { "/App.tsx": SAMPLE_CODE } }}
         theme="sandpack-dark"
         options={{ editorHeight: 650 }}
       />

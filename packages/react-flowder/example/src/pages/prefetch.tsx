@@ -1,14 +1,14 @@
-import React, { memo, VFC } from 'react';
-import { Sandpack } from '../components/Sandpack';
+import React, { memo, VFC } from "react";
+import Sandpack from "../components/Sandpack";
 
 const dependencies = {
-  react: '17.0.2',
-  'react-dom': '17.0.2',
-  rxjs: '^7.5.4',
-  '@naporin0624/react-flowder': '^2.0.0',
+  react: "17.0.2",
+  "react-dom": "17.0.2",
+  rxjs: "^7.5.4",
+  "@naporin0624/react-flowder": "^2.0.0",
 };
 
-const IndexPage: VFC = () => {
+const PrefetchPage: VFC = () => {
   return (
     <section>
       <h1>Usage to pre-fetch the datasource.</h1>
@@ -24,9 +24,9 @@ const IndexPage: VFC = () => {
         customSetup={{
           dependencies,
           files: {
-            '/App.tsx': SAMPLE_CODE,
-            '/resource.ts': RESOURCE_FILE,
-            '/datasource.ts': DATASOURCE_FILE,
+            "/App.tsx": SAMPLE_CODE,
+            "/resource.ts": RESOURCE_FILE,
+            "/datasource.ts": DATASOURCE_FILE,
           },
         }}
         theme="sandpack-dark"
@@ -36,7 +36,7 @@ const IndexPage: VFC = () => {
   );
 };
 
-export default memo(IndexPage);
+export default memo(PrefetchPage);
 
 const RESOURCE_FILE = `import { map, interval, from } from "rxjs";
 

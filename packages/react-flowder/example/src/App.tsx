@@ -1,9 +1,9 @@
-import React, { lazy, memo } from 'react';
-import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
+import React, { lazy, memo } from "react";
+import { BrowserRouter, NavLink, Route, Routes } from "react-router-dom";
 
-const IndexPage = lazy(() => import('./pages/'));
-const ExampleErrorPage = lazy(() => import('./pages/error-boundary'));
-const PrefetchPage = lazy(() => import('./pages/prefetch'));
+const IndexPage = lazy(() => import("./pages/"));
+const ExampleErrorPage = lazy(() => import("./pages/error-boundary"));
+const PrefetchPage = lazy(() => import("./pages/prefetch"));
 
 const App = () => (
   <BrowserRouter>
