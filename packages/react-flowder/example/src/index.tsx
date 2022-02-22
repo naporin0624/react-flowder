@@ -2,11 +2,12 @@ import { Provider } from '@naporin0624/react-flowder';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import './index.css';
+
+import '@codesandbox/sandpack-react/dist/index.css';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Suspense fallback={'loading'}>
+    <Suspense fallback={null}>
       <Provider>
         <App />
       </Provider>
