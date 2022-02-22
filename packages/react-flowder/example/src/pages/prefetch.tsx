@@ -11,7 +11,14 @@ const dependencies = {
 const IndexPage: VFC = () => {
   return (
     <section>
-      <h1>Simple Usage</h1>
+      <h1>Usage to pre-fetch the datasource.</h1>
+      <p>
+        usePrefetch is a custom hook that takes a datasource as an argument.
+      </p>
+      <p>
+        If you do useReadData after doing prefetch, you can get the data without
+        Suspend.
+      </p>
       <Sandpack
         template="react-ts"
         customSetup={{
