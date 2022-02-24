@@ -32,8 +32,10 @@ export const usePrefetch = <Args extends unknown[], T>(builder: DatasourceBuilde
       try {
         const payload = await loader();
         cache?.set(key, { type: "success", payload });
+        return payload;
       } catch (error) {
         cache?.set(key, { type: "error", payload: error instanceof Error ? error : new Error(JSON.stringify(error)) });
+        throw error;
       }
     },
     [builder, cache]

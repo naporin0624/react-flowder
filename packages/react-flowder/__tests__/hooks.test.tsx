@@ -178,7 +178,9 @@ describe("usePrefetch test", () => {
       { wrapper }
     );
     act(() => {
-      result.current.prefetch();
+      result.current.prefetch().catch(() => {
+        //
+      });
     });
 
     await waitFor(() => result.current.context.cache.get(errorDatasource())?.type !== undefined);
