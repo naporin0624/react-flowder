@@ -135,8 +135,7 @@ describe("useReset test", () => {
       result.current.reset();
     });
 
-    // reset された時点で loader が走り始めるので key は作られる
-    expect(result.current.context.cache.get(datasourceWithArgs(1))?.type).toEqual("pending");
+    expect(Array.from(result.current.context.cache.keys()).some((key) => key === datasourceWithArgs(1).toString())).toEqual(false);
     expect(Array.from(result.current.context.flow.state.keys()).some((key) => key === datasourceWithArgs(1).toString())).toEqual(false);
   });
 });
