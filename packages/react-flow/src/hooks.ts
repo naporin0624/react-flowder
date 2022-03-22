@@ -13,10 +13,14 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   const subscribe = useCallback(
     (onSnapshot: () => void) => {
       context.register(key, $);
-      const d = context.state.subscribe(onSnapshot);
+      const { unsubscribe } = context.state.subscribe((method, updateKey) => {
+        if (updateKey === key || method === "clear") {
+          onSnapshot();
+        }
+      });
 
       return () => {
-        d.unsubscribe();
+        unsubscribe();
         context.lift(key);
       };
     },
