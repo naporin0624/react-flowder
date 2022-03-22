@@ -37,7 +37,7 @@ export const createFlowRoot = (props?: Props): FlowRoot => {
     counter.set(key, count + 1);
     if (count > 0) return;
 
-    const dispose = $.pipe().subscribe({
+    const dispose = $.subscribe({
       next(value) {
         state.set(key, { type: "success", payload: value });
       },
