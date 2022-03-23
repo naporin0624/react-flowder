@@ -10,7 +10,7 @@ export const useProvider = () => {
   const cache = useContext(CacheContext);
   if (!flow || !cache) throw new Error("Provider not found");
 
-  return { flow, cache };
+  return useMemo(() => ({ flow, cache }), [cache, flow]);
 };
 
 export const useReadData = <T>(key: DatasourceKey<T>): T => {
@@ -64,7 +64,7 @@ export function useReset<Args extends unknown[], T>(input?: DatasourceKey<T> | D
     cache?.forEach((v, k) => {
       if (k.startsWith(key)) cache?.delete(k);
     });
-  }, [cache, flow, input]);
+  }, [cache, flow.state, input]);
 
   const reset = useCallback(() => {
     const key = input?.toString();

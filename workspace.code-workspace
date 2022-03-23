@@ -28,8 +28,10 @@
 		"editor.tabSize": 2,
 		"flow.enabled": false,
 		"cSpell.words": [
+			"Datasource",
 			"flowder",
-			"naporin"
+			"naporin",
+			"Prefetch"
 		]
 	}
 }
