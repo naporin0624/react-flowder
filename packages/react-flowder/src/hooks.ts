@@ -3,7 +3,7 @@ import { FlowContext, useFlow } from "@naporin0624/react-flow";
 import { useLoader, CacheContext } from "@naporin0624/react-loader";
 import { firstValueFrom } from "rxjs";
 
-import { DatasourceKey, DatasourceBuilder, getSource } from "./core";
+import { DatasourceKey, Datasource, getSource } from "./core";
 
 export const useProvider = () => {
   const flow = useContext(FlowContext);
@@ -21,12 +21,12 @@ export const useReadData = <T>(key: DatasourceKey<T>): T => {
   return useFlow(key, $, useLoader(key, loader));
 };
 
-export const usePrefetch = <Args extends unknown[], T>(builder: DatasourceBuilder<Args, T>) => {
+export const usePrefetch = <Args extends unknown[], T>(datasource: Datasource<Args, T>) => {
   const { cache } = useProvider();
 
   const prefetch = useCallback(
     async (...args: Args) => {
-      const key = builder(...args);
+      const key = datasource(...args);
       const loader = () => firstValueFrom(getSource(key));
 
       try {
@@ -38,7 +38,7 @@ export const usePrefetch = <Args extends unknown[], T>(builder: DatasourceBuilde
         throw error;
       }
     },
-    [builder, cache]
+    [datasource, cache]
   );
 
   return prefetch;
@@ -46,8 +46,8 @@ export const usePrefetch = <Args extends unknown[], T>(builder: DatasourceBuilde
 
 export function useReset(): () => void;
 export function useReset<T>(flowder: DatasourceKey<T>): () => void;
-export function useReset<Args extends unknown[], T>(builder: DatasourceBuilder<Args, T>): () => void;
-export function useReset<Args extends unknown[], T>(input?: DatasourceKey<T> | DatasourceBuilder<Args, T>) {
+export function useReset<Args extends unknown[], T>(builder: Datasource<Args, T>): () => void;
+export function useReset<Args extends unknown[], T>(input?: DatasourceKey<T> | Datasource<Args, T>) {
   const { flow, cache } = useProvider();
 
   const resetAll = useCallback(() => {

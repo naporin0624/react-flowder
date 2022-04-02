@@ -8,7 +8,7 @@ declare const $datasource: unique symbol;
 export type DatasourceKey<T> = string & {
   [$datasource]: T;
 };
-export interface DatasourceBuilder<Args extends unknown[], T> {
+export interface Datasource<Args extends unknown[], T> {
   (...args: Args): DatasourceKey<T>;
   toString(): string;
 }
@@ -16,7 +16,7 @@ export interface DatasourceBuilder<Args extends unknown[], T> {
 const sources = new Map<string, Observable<any>>();
 
 let keyCount = 0;
-export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T>): DatasourceBuilder<Args, T> => {
+export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T>): Datasource<Args, T> => {
   const id = `datasource__${++keyCount}`;
   const builder = (...args: Args): DatasourceKey<T> => {
     const key = `${id}:${stringify(args)}` as DatasourceKey<T>;
