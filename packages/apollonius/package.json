@@ -1,9 +1,14 @@
 {
-  "name": "@naporin0624/react-flow",
-  "version": "0.2.1",
+  "name": "@naporin0624/apollonius",
+  "version": "0.0.0",
   "description": "> TODO: description",
+  "keywords": [
+    "apollo",
+    "react",
+    "suspense"
+  ],
   "author": "naporin0624 <naporin0624@gmail.com>",
-  "homepage": "https://github.com/naporin0624/packages/tree/main/packages/react-flow#react-flow",
+  "homepage": "https://github.com/naporin0624/packages#readme",
   "license": "MIT",
   "main": "lib/index-cjs.js",
   "module": "lib/index-esm.js",
@@ -27,21 +32,18 @@
   },
   "private": false,
   "peerDependencies": {
-    "react": "^17.0.2",
-    "rxjs": "^7.4.0"
+    "@apollo/client": "^3.5.10",
+    "graphql": "^16.3.0",
+    "react": "^18.0.0"
   },
   "devDependencies": {
-    "@testing-library/react-hooks": "^7.0.2",
-    "@types/react": "^17.0.37",
-    "@types/use-sync-external-store": "^0.0.3",
-    "eslint-plugin-react": "^7.27.1",
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "rxjs": "^7.4.0"
+    "@apollo/client": "^3.5.10",
+    "@types/react": "^17.0.43",
+    "@types/react-dom": "^17.0.14",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "dependencies": {
-    "@naporin0624/simple-store": "^0.1.1",
     "use-sync-external-store": "^1.0.0"
   }
 }
