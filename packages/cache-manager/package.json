@@ -48,7 +48,7 @@
     "build": "rollup -c ./rollup.config.js"
   },
   "peerDependencies": {
-    "react": "^17.0.2"
+    "react": ">=16.8"
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^7.0.2",
