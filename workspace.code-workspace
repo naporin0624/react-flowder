@@ -7,6 +7,9 @@
 			"path": "packages/react-flowder"
 		},
 		{
+			"path": "packages/apollonius"
+		},
+		{
 			"path": "packages/react-loader"
 		},
 		{
@@ -26,7 +29,6 @@
 			}
 		],
 		"editor.tabSize": 2,
-		"flow.enabled": false,
 		"cSpell.words": [
 			"Datasource",
 			"flowder",
