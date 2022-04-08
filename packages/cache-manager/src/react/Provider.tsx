@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from "react";
+import React, { FC, ReactNode, useEffect, useMemo } from "react";
 import { createCacheManager, parse } from "../core";
 import { Context } from "./context";
 
@@ -10,6 +10,7 @@ type Props = {
   config?: {
     provider?: SimpleStore<string, [unknown, number]>;
   };
+  children?: ReactNode | undefined;
 };
 
 export const Provider: FC<Props> = ({ value, children, config }) => {
