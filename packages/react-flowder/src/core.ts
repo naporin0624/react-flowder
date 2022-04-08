@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import stringify from "fast-json-stable-stringify";
-import { isObservable, Observable } from "rxjs";
+import { from, isObservable, Observable } from "rxjs";
 
-type Resource<Args extends unknown[], T> = (...args: Args) => Observable<T>;
+type Resource<Args extends unknown[], T> = (...args: Args) => Observable<T> | Promise<T>;
 
 declare const $datasource: unique symbol;
 export type DatasourceKey<T> = string & {
@@ -20,7 +20,11 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
   const id = `datasource__${++keyCount}`;
   const builder = (...args: Args): DatasourceKey<T> => {
     const key = `${id}:${stringify(args)}` as DatasourceKey<T>;
-    if (!sources.has(key)) sources.set(key, resource(...args));
+    const r = resource(...args);
+    if (!sources.has(key)) {
+      if (r instanceof Promise) sources.set(key, from(r));
+      else sources.set(key, r);
+    }
 
     return key;
   };
