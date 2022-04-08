@@ -20,6 +20,7 @@ export interface FlowRoot {
   state: SimpleStore<string, Status>;
 }
 export const FlowContext = createContext<FlowRoot | null>(null);
+FlowContext.displayName = "FlowContext";
 
 type Props = {
   state?: SimpleStore<string, Status>;

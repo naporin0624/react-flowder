@@ -19,6 +19,7 @@ type Status<T = any> =
 export type CacheStore = SimpleStore<string, Status>;
 
 export const CacheContext = createContext<CacheStore | null>(null);
+CacheContext.displayName = "CacheContext";
 
 export const createCacheStore = (): CacheStore => {
   return createStore<string, Status>();
