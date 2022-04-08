@@ -32,8 +32,8 @@
   },
   "private": false,
   "peerDependencies": {
-    "@apollo/client": "^3.5.10",
-    "graphql": "^16.3.0",
+    "@apollo/client": ">=3.5.10",
+    "graphql": ">=16.3.0",
     "react": ">=16.8"
   },
   "devDependencies": {
