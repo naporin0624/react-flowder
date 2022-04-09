@@ -7,9 +7,6 @@
 			"path": "packages/react-flowder"
 		},
 		{
-			"path": "packages/apollonius"
-		},
-		{
 			"path": "packages/react-loader"
 		},
 		{
@@ -17,10 +14,6 @@
 		},
 		{
 			"path": "packages/simple-store"
-		},
-		{
-			"path": "packages/cache-manager"
-		}
 	],
 	"settings": {
 		"eslint.workingDirectories": [

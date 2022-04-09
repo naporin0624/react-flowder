@@ -1,5 +1,6 @@
-import { parse, createCacheManager } from ".";
 import { createStore } from "@naporin0624/simple-store";
+
+import { parse, createCacheManager } from ".";
 
 let keyCount = 0;
 const config = {

@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from "react";
+
 import { CacheContext, CacheStore } from "./cache";
 
 export const useLoader = <T extends Promise<unknown>>(key: string, loader: () => T): T extends Promise<infer U> ? U : never => {

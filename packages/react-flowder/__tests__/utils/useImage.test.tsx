@@ -1,5 +1,6 @@
-import React, { FC, ReactNode } from "react";
 import { cleanup, renderHook } from "@testing-library/react-hooks";
+import React, { FC, ReactNode } from "react";
+
 import { Provider } from "../../src";
 import { useImage } from "../../src/utils";
 

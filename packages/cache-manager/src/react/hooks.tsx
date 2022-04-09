@@ -1,8 +1,9 @@
 import { useContext } from "react";
+
 import { Context } from "./context";
 
-import type { CacheManager, Config } from "../core";
 import type { DefaultCache } from ".";
+import type { CacheManager, Config } from "../core";
 
 const useNonNullContext = () => {
   const c = useContext(Context);

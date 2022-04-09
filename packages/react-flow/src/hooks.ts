@@ -1,6 +1,7 @@
 import { useContext, useCallback, useMemo } from "react";
-import { FlowContext, Status } from "./context";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
+
+import { FlowContext, Status } from "./context";
 
 import type { Observable } from "rxjs";
 

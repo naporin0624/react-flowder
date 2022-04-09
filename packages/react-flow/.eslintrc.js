@@ -22,6 +22,7 @@ module.exports = {
     "react-hooks/exhaustive-deps": "error",
   },
   settings: {
+    ...config.settings,
     react: {
       version: "detect",
     },

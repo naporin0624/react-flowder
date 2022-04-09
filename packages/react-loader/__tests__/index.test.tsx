@@ -1,5 +1,6 @@
-import React, { FC, useState } from "react";
 import { act, renderHook, cleanup } from "@testing-library/react-hooks";
+import React, { FC, useState } from "react";
+
 import { Cache, useLoader, useCacheKey, useCache, createCacheStore, usePrefetch } from "../src";
 
 const timeout = (ms = 10, error?: boolean): Promise<number> => {

@@ -1,6 +1,7 @@
 import { createStore } from "@naporin0624/simple-store";
-import { createFlowRoot, Status } from "../src";
 import { Subject, Subscription, throwError } from "rxjs";
+
+import { createFlowRoot, Status } from "../src";
 
 const state = createStore<string, Status>();
 const counter = new Map<string, number>();

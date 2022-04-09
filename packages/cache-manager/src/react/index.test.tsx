@@ -1,7 +1,8 @@
-import React, { FC } from "react";
-import { useCache, Provider } from ".";
 import { createStore } from "@naporin0624/simple-store";
 import { renderHook } from "@testing-library/react-hooks";
+import React, { FC } from "react";
+
+import { useCache, Provider } from ".";
 
 let keyCount = 0;
 const inject = {

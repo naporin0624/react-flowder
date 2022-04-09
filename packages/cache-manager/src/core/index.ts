@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createStore, SimpleStore } from "@naporin0624/simple-store";
 import stringify from "fast-json-stable-stringify";
+
 import { Option, parse, Config } from "./config";
 export { Config, parse };
 
