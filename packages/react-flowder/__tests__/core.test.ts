@@ -1,4 +1,5 @@
 import { EMPTY, interval, map, Observable } from "rxjs";
+
 import { datasource, DatasourceKey, getSource } from "../src/core";
 
 const timer = interval();
@@ -31,6 +32,6 @@ describe("flowder test", () => {
   });
 
   test("change key test", () => {
-    expect(() => getSource("" as DatasourceKey<unknown>)).toThrowError(new Error("This flowder has not been registered."));
+    expect(() => getSource("" as DatasourceKey<unknown>)).toThrowError(new Error("This datasource has not been registered."));
   });
 });
