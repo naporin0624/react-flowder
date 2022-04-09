@@ -8,6 +8,7 @@ A library that connects rxjs to React and uses suspense to load data on the firs
 
 ## Usage
 [example-page](https://packages-sigma.vercel.app/)
+[blog](https://naporitan.hatenablog.com/entry/2022/03/23/194002)
 
 
 ```jsx
