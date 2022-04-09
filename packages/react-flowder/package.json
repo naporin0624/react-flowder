@@ -5,7 +5,9 @@
   "keywords": [
     "react",
     "suspense",
-    "rxjs"
+    "rxjs",
+    "state",
+    "state management"
   ],
   "author": "naporin0624 <naporin0624@gmail.com>",
   "homepage": "https://github.com/naporin0624/packages/tree/main/packages/react-flowder#react-flowder",
@@ -13,11 +15,37 @@
   "main": "lib/index-cjs.js",
   "module": "lib/index-esm.js",
   "types": "lib/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index-esm.js",
+      "require": "./lib/index-cjs.js"
+    },
+    "./utils": {
+      "types": "./lib/utils/index.d.ts",
+      "import": "./lib/utils/index-esm.js",
+      "require": "./lib/utils/index-cjs.js"
+    },
+    "./apollo": {
+      "types": "./lib/apollo/index.d.ts",
+      "import": "./lib/apollo/index-esm.js",
+      "require": "./lib/apollo/index-cjs.js"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "apollo": [
+        "lib/apollo/index.d.ts"
+      ],
+      "utils": [
+        "lib/utils/index.d.ts"
+      ]
+    }
+  },
   "files": [
     "README.md",
-    "lib/index-cjs.js",
-    "lib/index-esm.js",
-    "lib/index.d.ts",
+    "lib",
     "package.json"
   ],
   "publishConfig": {
@@ -32,8 +60,18 @@
   },
   "private": false,
   "peerDependencies": {
+    "@apollo/client": "*",
+    "graphql": "*",
     "react": ">=16.8",
-    "rxjs": "^7.4.0"
+    "rxjs": "*"
+  },
+  "peerDependenciesMeta": {
+    "@apollo/client": {
+      "optional": true
+    },
+    "graphql": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@testing-library/react-hooks": "^7.0.2",
@@ -42,7 +80,7 @@
     "eslint-plugin-react-hooks": "^4.3.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "rxjs": "^7.4.0"
+    "rxjs": "^7.5.5"
   },
   "dependencies": {
     "@naporin0624/react-flow": "^1.0.1",

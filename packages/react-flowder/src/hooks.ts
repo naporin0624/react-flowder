@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useContext } from "react";
 import { FlowContext, useFlow } from "@naporin0624/react-flow";
 import { useLoader, CacheContext } from "@naporin0624/react-loader";
+import { useCallback, useMemo, useContext } from "react";
 import { firstValueFrom } from "rxjs";
 
 import { DatasourceKey, Datasource, getSource } from "./core";
@@ -44,9 +44,10 @@ export const usePrefetch = <Args extends unknown[], T>(datasource: Datasource<Ar
   return prefetch;
 };
 
-export function useReset(): () => void;
-export function useReset<T>(flowder: DatasourceKey<T>): () => void;
-export function useReset<Args extends unknown[], T>(builder: Datasource<Args, T>): () => void;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useReset(): (key?: DatasourceKey<any> | Datasource<any[], any>) => void;
+export function useReset<T>(key: DatasourceKey<T>): () => void;
+export function useReset<Args extends unknown[], T>(key: Datasource<Args, T>): () => void;
 export function useReset<Args extends unknown[], T>(input?: DatasourceKey<T> | Datasource<Args, T>) {
   const { flow, cache } = useProvider();
 
@@ -54,23 +55,26 @@ export function useReset<Args extends unknown[], T>(input?: DatasourceKey<T> | D
     flow?.state.clear();
     cache?.clear();
   }, [cache, flow]);
-  const resetWithKey = useCallback(() => {
-    const key = input?.toString();
-    if (!key) return;
+  const resetWithKey = useCallback(
+    (key: string) => {
+      flow?.state.forEach((v, k) => {
+        if (k.startsWith(key)) flow.state.delete(k);
+      });
+      cache?.forEach((v, k) => {
+        if (k.startsWith(key)) cache?.delete(k);
+      });
+    },
+    [cache, flow.state]
+  );
 
-    flow?.state.forEach((v, k) => {
-      if (k.startsWith(key)) flow.state.delete(k);
-    });
-    cache?.forEach((v, k) => {
-      if (k.startsWith(key)) cache?.delete(k);
-    });
-  }, [cache, flow.state, input]);
-
-  const reset = useCallback(() => {
-    const key = input?.toString();
-    if (key) resetWithKey();
-    else resetAll();
-  }, [input, resetAll, resetWithKey]);
+  const reset = useCallback(
+    (args?: DatasourceKey<T> | Datasource<Args, T>) => {
+      const key = input?.toString() ?? args?.toString();
+      if (key) resetWithKey(key);
+      else resetAll();
+    },
+    [input, resetAll, resetWithKey]
+  );
 
   return reset;
 }

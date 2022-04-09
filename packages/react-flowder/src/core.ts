@@ -36,7 +36,7 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
 
 export const getSource = <T>(datasource: DatasourceKey<T>): Observable<T> => {
   const $ = sources.get(datasource.toString());
-  if (!$) throw new Error("This flowder has not been registered.");
+  if (!$) throw new Error("This datasource has not been registered.");
   if (!isObservable($)) throw new Error("The registered Object is not an Observable.");
 
   return $ as Observable<T>;

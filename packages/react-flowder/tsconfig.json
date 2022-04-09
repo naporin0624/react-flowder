@@ -2,7 +2,11 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "jsx": "react",
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@naporin0624/react-flowder": ["./src/index.ts"],
+      "jotai/*": ["./src/*.ts"]
+    }
   },
   "include": ["src", "__tests__"]
 }

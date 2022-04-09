@@ -1,9 +1,10 @@
+import { act, cleanup, renderHook } from "@testing-library/react-hooks";
 import React, { FC } from "react";
+import { interval, BehaviorSubject, map, Subject } from "rxjs";
+
 import { datasource } from "../src/core";
 import { useReadData, useReset, useProvider, usePrefetch } from "../src/hooks";
 import { Provider } from "../src/Provider";
-import { act, cleanup, renderHook } from "@testing-library/react-hooks";
-import { interval, BehaviorSubject, map, Subject } from "rxjs";
 
 const timer = interval();
 const timerDatasource = datasource(() => timer);
