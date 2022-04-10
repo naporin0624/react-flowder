@@ -7,6 +7,7 @@ export const useLoader = <T extends Promise<unknown>>(key: string, loader: () =>
   if (cacheStore === null) throw new Error("CacheContext not found");
 
   const cache = cacheStore.get(key);
+  console.log("cache", cache, "key", key);
   if (cache) {
     switch (cache.type) {
       case "pending":
