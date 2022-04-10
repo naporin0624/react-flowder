@@ -40,7 +40,5 @@ app.innerHTML = `
 `;
 app.appendChild(counter);
 app.appendChild(increment);
-app.appendChild(decrement)
+app.appendChild(decrement);
 ```
-
-

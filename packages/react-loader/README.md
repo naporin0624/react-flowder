@@ -15,27 +15,21 @@ import Nprogress from "nprogress";
 import "nprogress/nprogress.css";
 
 const timeout = (ms: number) => {
-  return new Promise<number>((resolve) => setTimeout(() => resolve(ms), ms));
+  return new Promise() < number > ((resolve) => setTimeout(() => resolve(ms), ms));
 };
 
-const App = () =>  {
+const App = () => {
   const [count, setCount] = useState(100);
   const data = useLoader(`timeout_${count}`, () => timeout(count));
 
   return (
     <div>
-      <input
-        type="number"
-        value={count}
-        onChange={(e) => setCount(parseInt(e.target.value, 10))}
-        step={100}
-        min={0}
-      />
+      <input type="number" value={count} onChange={(e) => setCount(parseInt(e.target.value, 10))} step={100} min={0} />
 
       <p>result: {data}</p>
     </div>
   );
-}
+};
 
 const Fallback = () => {
   useEffect(() => {
@@ -62,4 +56,3 @@ render(
 ## LICENSE
 
 MIT
-
