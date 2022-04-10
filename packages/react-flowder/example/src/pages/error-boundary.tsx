@@ -29,8 +29,7 @@ const ErrorPage: VFC = () => {
 
 export default memo(ErrorPage);
 
-const SAMPLE_CODE = `import React, { Suspense } from "react";
-import { render } from "react-dom";
+const SAMPLE_CODE = `import React, { Suspense, useMemo } from "react";
 import { interval, Subject, merge, concatMap, timestamp, map, of, throwError } from "rxjs";
 import { datasource, useReadData, Provider, useReset } from "@naporin0624/react-flowder";
 import { ErrorBoundary } from "react-error-boundary";
@@ -52,7 +51,7 @@ const resource = merge(
 const timer = datasource(() => resource);
 
 const Timer = () => {
-	const time = useReadData(timer());
+	const time = useReadData(useMemo(() => timer(), []));
 
   return (
     <div>
