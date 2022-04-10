@@ -30,9 +30,9 @@ const createStepImageSource = (images: string[]) => {
 const source = datasource(createStepImageSource);
 
 export function useImage(src: string): [data: HTMLImageElement, reset: () => void];
-export function useImage(images: [string, ...string[]]): [data: HTMLImageElement, reset: () => void];
-export function useImage(args: string | [string, ...string[]]): [data: HTMLImageElement, reset: () => void];
-export function useImage(args: string | [string, ...string[]]): [data: HTMLImageElement, reset: () => void] {
+export function useImage(images: string[]): [data: HTMLImageElement, reset: () => void];
+export function useImage(args: string | string[]): [data: HTMLImageElement, reset: () => void];
+export function useImage(args: string | string[]): [data: HTMLImageElement, reset: () => void] {
   const key = useMemo(() => source(Array.isArray(args) ? args : [args]), [args]);
   const data = useReadData(key);
   const reset = useReset(key);
