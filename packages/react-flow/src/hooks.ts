@@ -1,4 +1,4 @@
-import { useEffect, useContext, useCallback, useMemo } from "react";
+import { useContext, useCallback, useMemo } from "react";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 
 import { FlowContext, Status } from "./context";
@@ -11,15 +11,9 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
   const context = useContext(FlowContext);
   if (context === null) throw new Error("FlowContext is not found");
 
-  useEffect(() => {
-    context.register(key, $);
-    return () => {
-      context.lift(key);
-    };
-  }, [key, $, context]);
-
   const subscribe = useCallback(
     (onSnapshot: () => void) => {
+      context.register(key, $);
       const { unsubscribe } = context.state.subscribe((method, updateKey) => {
         if (updateKey === key || method === "clear") {
           onSnapshot();
@@ -27,10 +21,11 @@ export function useFlow<T, U>(key: string, $: Observable<T>, initialValue?: U) {
       });
 
       return () => {
+        context.lift(key);
         unsubscribe();
       };
     },
-    [context, key]
+    [$, context, key]
   );
   const initialStatus = useMemo<Status<U | undefined>>(() => ({ type: "success", payload: initialValue }), [initialValue]);
   const getSnapshot = useCallback((): Status<T | U | undefined> => context.state.get(key) ?? initialStatus, [context.state, initialStatus, key]);
