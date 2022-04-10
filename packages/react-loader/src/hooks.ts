@@ -19,6 +19,7 @@ export const useLoader = <T extends Promise<unknown>>(key: string, loader: () =>
     }
   }
 
+  console.log("loader called");
   const promise = loader()
     .then((payload) => cacheStore.set(key, { type: "success", payload }))
     .catch((payload) => cacheStore.set(key, { type: "error", payload }));
