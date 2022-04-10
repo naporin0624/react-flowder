@@ -2,11 +2,11 @@ import React, { memo, VFC } from "react";
 import Sandpack from "../components/Sandpack";
 
 const dependencies = {
-  react: "17.0.2",
-  "react-dom": "17.0.2",
-  rxjs: "^7.5.4",
-  "@naporin0624/react-flowder": "^2.0.0",
-};
+  react: "*",
+  "react-dom": "*",
+  rxjs: "*",
+  "@naporin0624/react-flowder": "*",
+}
 
 const PrefetchPage: VFC = () => {
   return (
@@ -38,9 +38,9 @@ const PrefetchPage: VFC = () => {
 
 export default memo(PrefetchPage);
 
-const RESOURCE_FILE = `import { map, interval, from } from "rxjs";
+const RESOURCE_FILE = `import { map, interval } from "rxjs";
 
-export const timer = interval(1500).pipe(map(x => x + 1));
+export const timer = () => interval(1500).pipe(map(x => x + 1));
 
 type Todo = {
   userId: number;
@@ -48,8 +48,8 @@ type Todo = {
   title: string;
   completed: boolean;
 };
-async function todo(id: number) {
-  const promise = fetch("https://jsonplaceholder.typicode.com/todos/" + id.toString());
+export async function todo(id: number) {
+  const promise = fetch(\`https://jsonplaceholder.typicode.com/todos/$\{id\}\`);
   const [response] = await Promise.all([
     promise,
     new Promise((resolve) => setTimeout(resolve, 500)),
@@ -61,13 +61,12 @@ async function todo(id: number) {
     throw new Error('error');
   }
 } 
-export const getTodo = (id: number) => from(todo(id));
 `;
 const DATASOURCE_FILE = `import { datasource } from "@naporin0624/react-flowder";
 import * as resource from "./resource";
 
-export const timer = datasource(() => resource.timer);
-export const todos = datasource((id: number) => resource.getTodo(id));
+export const timer = datasource(resource.timer);
+export const todos = datasource(resource.todo);
 `;
 const SAMPLE_CODE = `import React, { Suspense, useState } from "react";
 import { render } from "react-dom";
@@ -95,7 +94,7 @@ const PrefetchTodo = () => {
     setLoading(true);
     try {
       const id = time + 1;
-			const prefetch = Array(5).fill(0).map((_, idx) => prefetchTodo(idx + id))
+      const prefetch = Array(5).fill(0).map((_, idx) => prefetchTodo(idx + id))
       await Promise.all(prefetch);
       setFetchedId(id);
     } finally {
@@ -103,32 +102,32 @@ const PrefetchTodo = () => {
     }
   };
 
-	return (
-		<div>
-	    <p>time: {time}</p>
-			<button onClick={fetch}>{loading ? 'loading' : 'click'}</button>
+  return (
+    <div>
+      <p>time: {time}</p>
+      <button onClick={fetch}>{loading ? 'loading' : 'click'}</button>
       <div>{!loading && <TodoView id={fetchedId} />}</div>
-		</div>
-	)
+    </div>
+  )
 }
 
 const Todo = () => {
   const time = useReadData(timer());
 
-	return (
-  	<TodoView id={time} />
-	)
+  return (
+    <TodoView id={time} />
+  )
 }
 
 const App = () => (
-	<Provider>
-		<Suspense fallback={<p>loading</p>}>
-			<PrefetchTodo />
+  <Provider>
+    <Suspense fallback={<p>loading</p>}>
+      <PrefetchTodo />
       <Suspense fallback={'todo view loading...'}>
-				<Todo />
+        <Todo />
       </Suspense>
-		</Suspense>
-	</Provider>
+    </Suspense>
+  </Provider>
 );
 
 export default App;

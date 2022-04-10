@@ -2,12 +2,12 @@ import React, { memo, VFC } from "react";
 import Sandpack from "../components/Sandpack";
 
 const dependencies = {
-  react: "17.0.2",
-  "react-dom": "17.0.2",
-  rxjs: "^7.5.4",
-  "@naporin0624/react-flowder": "^2.0.0",
-  "react-error-boundary": "^3.1.4",
-};
+  react: "*",
+  "react-dom": "*",
+  rxjs: "*",
+  "@naporin0624/react-flowder": "*",
+  "react-error-boundary": "*",
+}
 
 const ErrorPage: VFC = () => {
   return (
