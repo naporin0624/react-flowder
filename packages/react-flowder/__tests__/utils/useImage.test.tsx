@@ -29,7 +29,7 @@ describe("useImage test", () => {
   const wrapper: FC<{ children?: ReactNode | null }> = ({ children }) => <Provider>{children}</Provider>;
 
   test("load image", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useImage(images.small), { wrapper });
+    const { result, waitForNextUpdate } = renderHook(() => useImage([images.small]), { wrapper });
     await waitForNextUpdate();
     expect(result.current[0].src).toEqual(images.small);
   });
