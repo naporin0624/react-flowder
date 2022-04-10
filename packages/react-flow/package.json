@@ -1,6 +1,6 @@
 {
   "name": "@naporin0624/react-flow",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "> TODO: description",
   "author": "naporin0624 <naporin0624@gmail.com>",
   "homepage": "https://github.com/naporin0624/packages/tree/main/packages/react-flow#react-flow",
@@ -41,7 +41,7 @@
     "rxjs": "^7.5.5"
   },
   "dependencies": {
-    "@naporin0624/simple-store": "^0.1.1",
+    "@naporin0624/simple-store": "^0.1.2",
     "use-sync-external-store": "^1.0.0"
   }
 }

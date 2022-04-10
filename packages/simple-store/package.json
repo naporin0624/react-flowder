@@ -1,6 +1,6 @@
 {
   "name": "@naporin0624/simple-store",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A simple store using map",
   "keywords": [
     "store"
