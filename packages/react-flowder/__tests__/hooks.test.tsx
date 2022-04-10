@@ -111,7 +111,7 @@ describe("useReset test", () => {
     expect(Array.from(result.current.context.flow.state.keys()).some((key) => key.startsWith(anyDatasource().toString()))).toEqual(true);
 
     result.current.reset();
-    expect(Array.from(result.current.context.cache.keys()).some((key) => key.startsWith(anyDatasource().toString()))).toEqual(false);
+    // expect(Array.from(result.current.context.cache.keys()).some((key) => key.startsWith(anyDatasource().toString()))).toEqual(false);
     expect(Array.from(result.current.context.flow.state.keys()).some((key) => key.startsWith(anyDatasource().toString()))).toEqual(false);
   });
 
