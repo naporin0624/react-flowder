@@ -40,6 +40,7 @@ export const createFlowRoot = (props?: Props): FlowRoot => {
 
     const dispose = $.subscribe({
       next(value) {
+        console.log("called", value);
         state.set(key, { type: "success", payload: value });
       },
       error(err) {
