@@ -138,12 +138,17 @@ export class DatasourceResolverImpl implements DatasourceResolver {
   resetCache<Args extends unknown[], T>(key?: DatasourceKey<T> | Datasource<Args, T>): void {
     if (typeof key === "string") {
       this.cache.delete(key);
+      this.subscriptions.delete(key);
     } else if (typeof key === "function") {
       this.cache.forEach((v, k) => {
-        if (k.startsWith(key.toString())) this.cache.delete(k);
+        if (k.startsWith(key.toString())) {
+          this.cache.delete(k);
+          this.subscriptions.delete(k);
+        }
       });
     } else {
       this.cache.clear();
+      this.subscriptions.clear();
     }
   }
 
