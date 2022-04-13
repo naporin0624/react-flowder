@@ -34,7 +34,7 @@ import { datasource, useReadData, Provider } from "@naporin0624/react-flowder";
 const timer = datasource(() => interval(1000));
 
 const Timer = () => {
-  const time = useReadData(timer(), []));
+  const time = useReadData(timer());
 
   return (
     <div>
