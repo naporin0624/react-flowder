@@ -87,6 +87,7 @@
     "rxjs": "^7.5.5"
   },
   "dependencies": {
+    "@naporin0624/simple-store": "^0.1.2",
     "fast-json-stable-stringify": "^2.1.0",
     "use-sync-external-store": "^1.0.0"
   }
