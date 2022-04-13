@@ -6,7 +6,7 @@ import { datasources } from "./cache";
 
 import type { TypedDocumentNode } from "@apollo/client";
 
-const useDatasource = <T = never, V = OperationVariables>(query: TypedDocumentNode<T, V>): Datasource<[Omit<QueryOptions<V, T>, "query"> | undefined], T> => {
+export const useDatasource = <T = never, V = OperationVariables>(query: TypedDocumentNode<T, V>): Datasource<[Omit<QueryOptions<V, T>, "query"> | undefined], T> => {
   const client = useApolloClient();
 
   const cache = datasources.get(query);
@@ -17,7 +17,9 @@ const useDatasource = <T = never, V = OperationVariables>(query: TypedDocumentNo
     return new Observable<T>((subscriber) => {
       subscription.subscribe(
         (next) => subscriber.next(next.data),
-        (err) => subscriber.error(err),
+        (err) => {
+          subscriber.error(err);
+        },
         () => subscriber.complete()
       );
     });

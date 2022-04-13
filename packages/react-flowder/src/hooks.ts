@@ -1,80 +1,61 @@
-import { FlowContext, useFlow } from "@naporin0624/react-flow";
-import { useLoader, CacheContext } from "@naporin0624/react-loader";
-import { useCallback, useMemo, useContext } from "react";
+import { useCallback, useContext } from "react";
 import { firstValueFrom } from "rxjs";
+import { useSyncExternalStore } from "use-sync-external-store/shim";
 
-import { DatasourceKey, Datasource, getSource } from "./core";
+import { DatasourceKey, Datasource, DatasourceResolver, getSource } from "./core";
+import { Context } from "./Provider";
 
-export const useProvider = () => {
-  const flow = useContext(FlowContext);
-  const cache = useContext(CacheContext);
-  if (!flow || !cache) throw new Error("Provider not found");
+export const useDatasourceResolver = (): DatasourceResolver => {
+  const context = useContext(Context);
+  if (!context) throw new Error("Provider not found");
 
-  return useMemo(() => ({ flow, cache }), [cache, flow]);
+  return context;
 };
 
 export const useReadData = <T>(key: DatasourceKey<T>): T => {
-  useProvider();
-  const $ = useMemo(() => getSource(key), [key]);
-  const loader = useCallback(() => firstValueFrom($), [$]);
+  const resolver = useDatasourceResolver();
+  resolver.register(key);
 
-  return useFlow(key, $, useLoader(key, loader));
+  return useSyncExternalStore(
+    useCallback(
+      (onSnapshot) => {
+        onSnapshot();
+        return resolver.watchStatus(key).subscribe({
+          next: onSnapshot,
+        }).unsubscribe;
+      },
+      [key, resolver]
+    ),
+    useCallback(() => {
+      const status = resolver.getStatus(key);
+      if (status.type === "success") return status.data;
+      throw status.data;
+    }, [key, resolver])
+  );
 };
 
 export const usePrefetch = <Args extends unknown[], T>(datasource: Datasource<Args, T>) => {
-  const { cache } = useProvider();
-
+  const resolver = useDatasourceResolver();
   const prefetch = useCallback(
     async (...args: Args) => {
       const key = datasource(...args);
       const loader = () => firstValueFrom(getSource(key));
-
       try {
-        const payload = await loader();
-        cache?.set(key, { type: "success", payload });
-        return payload;
+        const data = await loader();
+        resolver.writeCache(key, { type: "success", data });
+        return data;
       } catch (error) {
-        cache?.set(key, { type: "error", payload: error instanceof Error ? error : new Error(JSON.stringify(error)) });
+        resolver.writeCache(key, { type: "error", data: error instanceof Error ? error : new Error(JSON.stringify(error)) });
         throw error;
       }
     },
-    [datasource, cache]
+    [datasource, resolver]
   );
-
   return prefetch;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function useReset(): (key?: DatasourceKey<any> | Datasource<any[], any>) => void;
-export function useReset<T>(key: DatasourceKey<T>): () => void;
-export function useReset<Args extends unknown[], T>(key: Datasource<Args, T>): () => void;
-export function useReset<Args extends unknown[], T>(input?: DatasourceKey<T> | Datasource<Args, T>) {
-  const { flow, cache } = useProvider();
+export function useReset(): <Args extends unknown[], T>(key?: Datasource<Args, T> | DatasourceKey<T>) => void {
+  const resolver = useDatasourceResolver();
 
-  const resetAll = useCallback(() => {
-    flow?.state.clear();
-    cache?.clear();
-  }, [cache, flow]);
-  const resetWithKey = useCallback(
-    (key: string) => {
-      flow?.state.forEach((v, k) => {
-        if (k.startsWith(key)) flow.state.delete(k);
-      });
-      cache?.forEach((v, k) => {
-        if (k.startsWith(key)) cache?.delete(k);
-      });
-    },
-    [cache, flow.state]
-  );
-
-  const reset = useCallback(
-    (args?: DatasourceKey<T> | Datasource<Args, T>) => {
-      const key = input?.toString() ?? args?.toString();
-      if (key) resetWithKey(key);
-      else resetAll();
-    },
-    [input, resetAll, resetWithKey]
-  );
-
-  return reset;
+  return useCallback((key) => resolver.resetCache(key), [resolver]);
 }

@@ -11,17 +11,6 @@ const images = {
 };
 
 describe("useImage test", () => {
-  beforeEach(() => {
-    const imageElement = document.createElement("img");
-
-    jest.spyOn(document, "createElement").mockImplementation(() => {
-      setTimeout(() => {
-        imageElement.dispatchEvent(new Event("load"));
-      }, 1000);
-
-      return imageElement;
-    });
-  });
   afterEach(() => {
     cleanup();
     jest.restoreAllMocks();
@@ -31,6 +20,17 @@ describe("useImage test", () => {
   test("load image", async () => {
     const { result, waitForNextUpdate } = renderHook(() => useImage(images.small), { wrapper });
     await waitForNextUpdate();
-    expect(result.current[0].src).toEqual(images.small);
+
+    const [img, reset] = result.current;
+    expect(img.src).toEqual(images.small);
+    expect(() => reset()).not.toThrow();
+  });
+
+  test("load some image", async () => {
+    const { result, waitForNextUpdate, waitFor } = renderHook(() => useImage([images.small, images.medium, images.large]), { wrapper });
+    await waitForNextUpdate();
+    await waitFor(() => result.current[0].src === images.small);
+    await waitFor(() => result.current[0].src === images.medium);
+    await waitFor(() => result.current[0].src === images.large);
   });
 });

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { createStore } from "@naporin0624/simple-store";
 import stringify from "fast-json-stable-stringify";
-import { from, isObservable, Observable } from "rxjs";
+import { Subscription, from, Observable, Subscribable, Unsubscribable, Observer } from "rxjs";
 
 type Resource<Args extends unknown[], T> = (...args: Args) => Observable<T> | Promise<T>;
 
@@ -29,15 +30,136 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
     return key;
   };
 
-  return Object.assign(builder, {
-    toString: () => id,
-  });
+  builder.toString = () => id;
+  return builder;
 };
 
 export const getSource = <T>(datasource: DatasourceKey<T>): Observable<T> => {
   const $ = sources.get(datasource.toString());
   if (!$) throw new Error("This datasource has not been registered.");
-  if (!isObservable($)) throw new Error("The registered Object is not an Observable.");
+  if (!($ instanceof Observable)) throw new Error("The registered Object is not an Observable.");
 
   return $ as Observable<T>;
 };
+
+export type Status<T = unknown> =
+  | {
+      type: "pending";
+      data: Promise<T>;
+    }
+  | {
+      type: "success";
+      data: T;
+    }
+  | {
+      type: "error";
+      data: Error;
+    };
+
+export interface DatasourceResolver {
+  register<T>(key: DatasourceKey<T>): void;
+  cancel<T>(key: DatasourceKey<T>): void;
+  cancelAll(): void;
+
+  watchStatus<T>(key: DatasourceKey<T>): Subscribable<Status<T>>;
+  getStatus<T>(key: DatasourceKey<T>): Status<T>;
+
+  writeCache<T>(key: DatasourceKey<T>, value: Status<T>): void;
+
+  resetCache(): void;
+  resetCache<T>(key: DatasourceKey<T>): void;
+  resetCache<Args extends unknown[], T>(key: Datasource<Args, T>): void;
+  resetCache<Args extends unknown[], T>(key?: DatasourceKey<T> | Datasource<Args, T>): void;
+}
+
+export class DatasourceResolverImpl implements DatasourceResolver {
+  constructor(private readonly subscriptions = new Map<DatasourceKey<unknown>, Subscription>(), private readonly cache = createStore<DatasourceKey<unknown>, Status<unknown>>()) {}
+
+  register<T>(key: DatasourceKey<T>): void {
+    // 二重登録はしない
+    if (this.subscriptions.has(key)) return;
+
+    const $ = getSource(key);
+    const subscription = $.subscribe({
+      next: (value) => {
+        this.cache.set(key, { type: "success", data: value });
+      },
+      error: (error) => {
+        this.cache.set(key, { type: "error", data: error });
+      },
+    });
+
+    this.subscriptions.set(key, subscription);
+  }
+  cancel<T>(key: DatasourceKey<T>): void {
+    const subscription = this.subscriptions.get(key);
+    if (!subscription) return;
+
+    subscription.unsubscribe();
+    this.subscriptions.delete(key);
+  }
+  cancelAll(): void {
+    this.subscriptions.forEach((value, key) => {
+      this.cancel(key);
+    });
+  }
+
+  watchStatus<T>(key: DatasourceKey<T>): Subscribable<Status<T>> {
+    const subscribe = (observer: Partial<Observer<Status<T>>>): Unsubscribable => {
+      const subscription = this.cache.subscribe((method, cacheKey) => {
+        const cache = this.cache.get(key);
+        // キャッシュがなくて自身の更新ではないときはスキップ
+        if (!cache || cacheKey !== key) return;
+
+        observer.next?.(cache as Status<T>);
+      });
+      return {
+        unsubscribe() {
+          subscription.unsubscribe();
+        },
+      };
+    };
+
+    return { subscribe };
+  }
+  getStatus<T>(key: DatasourceKey<T>): Status<T> {
+    const status = this.cache.get(key);
+    if (!status) return this.getInitialData(key);
+
+    return status as Status<T>;
+  }
+
+  writeCache<T>(key: DatasourceKey<T>, value: Status<T>): void {
+    this.cache.set(key, value);
+  }
+
+  resetCache(): void;
+  resetCache<T>(key: DatasourceKey<T>): void;
+  resetCache<Args extends unknown[], T>(key: Datasource<Args, T>): void;
+  resetCache<Args extends unknown[], T>(key?: DatasourceKey<T> | Datasource<Args, T>): void {
+    if (typeof key === "string") {
+      this.cache.delete(key);
+    } else if (typeof key === "function") {
+      this.cache.forEach((v, k) => {
+        if (k.startsWith(key.toString())) this.cache.delete(k);
+      });
+    } else {
+      this.cache.clear();
+    }
+  }
+
+  private getInitialData<T>(key: DatasourceKey<T>): Status<T> {
+    const data = new Promise<T>((resolve, reject) => {
+      const disposable = this.cache.subscribe((method, cacheKey) => {
+        const cache = this.cache.get(key);
+        if (key !== cacheKey || !cache) return;
+        if (cache.type === "pending") return;
+        if (cache.type === "success") resolve(cache.data as T);
+        if (cache.type === "error") reject(cache.data);
+
+        disposable.unsubscribe();
+      });
+    });
+    return { type: "pending", data };
+  }
+}

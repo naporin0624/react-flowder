@@ -1,31 +1,10 @@
-import { Provider as Flow, Status } from "@naporin0624/react-flow";
-import { Cache, createCacheStore } from "@naporin0624/react-loader";
-import { createStore } from "@naporin0624/simple-store";
-import React, { FC, ReactNode, useEffect, useMemo } from "react";
+import React, { createContext, FC, ReactNode } from "react";
+
+import { DatasourceResolver, DatasourceResolverImpl } from "./core";
+
+export const Context = createContext<DatasourceResolver | null>(null);
+Context.displayName = "DatasourceResolverContext";
 
 export const Provider: FC<{ children?: ReactNode | undefined }> = ({ children }) => {
-  const store = useMemo(() => ({ loader: createCacheStore(), flow: createStore<string, Status>() }), []);
-  const flowConfig = useMemo(() => ({ provider: store.flow }), [store.flow]);
-  const loaderConfig = useMemo(() => ({ provider: store.loader }), [store.loader]);
-
-  useEffect(() => {
-    const dispose = store.flow.subscribe((method, key) => {
-      if (method === "set" && key) {
-        const value = store.flow.get(key);
-        if (!value) return;
-
-        store.loader.set(key, value);
-      }
-    });
-
-    return () => {
-      dispose.unsubscribe();
-    };
-  }, [store]);
-
-  return (
-    <Flow config={flowConfig}>
-      <Cache config={loaderConfig}>{children}</Cache>
-    </Flow>
-  );
+  return <Context.Provider value={new DatasourceResolverImpl()}>{children}</Context.Provider>;
 };

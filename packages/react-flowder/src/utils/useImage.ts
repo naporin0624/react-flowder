@@ -1,5 +1,5 @@
 import { datasource, useReadData, useReset } from "@naporin0624/react-flowder";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { combineLatest, concat, map, Observable, of } from "rxjs";
 
 const createImageSource = (src: string): Observable<HTMLImageElement> => {
@@ -35,6 +35,8 @@ export function useImage(args: string | string[]): [data: HTMLImageElement, rese
 export function useImage(args: string | string[]): [data: HTMLImageElement, reset: () => void] {
   const key = useMemo(() => source(Array.isArray(args) ? args : [args]), [args]);
   const data = useReadData(key);
-  const reset = useReset(key);
-  return [data, reset];
+  const reset = useReset();
+  const resetImage = useCallback(() => reset(key), [key, reset]);
+
+  return useMemo(() => [data, resetImage], [data, resetImage]);
 }
