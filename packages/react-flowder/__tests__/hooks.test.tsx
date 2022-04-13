@@ -1,26 +1,22 @@
 import { act, cleanup, renderHook } from "@testing-library/react-hooks";
 import React, { FC } from "react";
-import { map, Subject } from "rxjs";
+import { Subject } from "rxjs";
 
 import { datasource } from "../src/core";
-import { useDatasourceResolver, usePrefetch, useReadData } from "../src/hooks";
+import { useDatasourceResolver, usePrefetch, useReadData, useReset } from "../src/hooks";
 import { Provider } from "../src/Provider";
 
 const any = new Subject<unknown>();
-const anyDatasource = datasource(() => any);
-
-const number = new Subject<number>();
-const datasourceWithArgs = datasource((offset: number) => number.pipe(map((t) => t + offset)));
+const resource = datasource(() => any);
 
 describe("useReadData test", () => {
   afterEach(() => {
     cleanup();
-    any.next(1);
   });
   const wrapper: FC = ({ children }) => <Provider>{children}</Provider>;
 
   test("suspend & data sync test", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useReadData(anyDatasource()), { wrapper });
+    const { result, waitForNextUpdate } = renderHook(() => useReadData(resource()), { wrapper });
     act(() => {
       any.next(1);
     });
@@ -32,25 +28,8 @@ describe("useReadData test", () => {
     expect(result.current).toEqual(2);
   });
 
-  test("datasourceWithArgs suspend & data sync test", async () => {
-    const { result, waitForNextUpdate, rerender } = renderHook<{ offset: number }, number>(({ offset }) => useReadData(datasourceWithArgs(offset)), {
-      wrapper,
-      initialProps: { offset: 0 },
-    });
-    act(() => number.next(0));
-    await waitForNextUpdate();
-    expect(result.current).toEqual(0);
-
-    act(() => number.next(1));
-    expect(result.current).toEqual(1);
-
-    rerender({ offset: 2 });
-    act(() => number.next(0));
-    expect(result.current).toEqual(2);
-  });
-
   test("any object sync test", async () => {
-    const { result, waitForNextUpdate } = renderHook(() => useReadData(anyDatasource()), { wrapper });
+    const { result, waitForNextUpdate } = renderHook(() => useReadData(resource()), { wrapper });
     act(() => any.next(1));
     await waitForNextUpdate();
 
@@ -63,8 +42,34 @@ describe("useReadData test", () => {
     expect(result.current).toEqual({});
   });
 
+  test("reset after suspend", async () => {
+    const { result, waitForNextUpdate } = renderHook(
+      () => {
+        const data = useReadData(resource());
+        const reset = useReset();
+        return { data, reset };
+      },
+      { wrapper }
+    );
+
+    let updated = waitForNextUpdate();
+    act(() => {
+      any.next(1);
+    });
+    await updated;
+    expect(result.current.data).toEqual(1);
+
+    updated = waitForNextUpdate();
+    act(() => {
+      result.current.reset();
+      any.next(2);
+    });
+    await updated;
+    expect(result.current.data).toEqual(2);
+  });
+
   test("context not found test", () => {
-    const { result } = renderHook(() => useReadData(anyDatasource()));
+    const { result } = renderHook(() => useReadData(resource()));
     expect(result.error).toEqual(new Error("Provider not found"));
   });
 });

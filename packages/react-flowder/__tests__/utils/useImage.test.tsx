@@ -1,4 +1,4 @@
-import { cleanup, renderHook } from "@testing-library/react-hooks";
+import { act, cleanup, renderHook } from "@testing-library/react-hooks";
 import React, { FC, ReactNode } from "react";
 
 import { Provider } from "../../src";
@@ -23,6 +23,8 @@ describe("useImage test", () => {
 
     const [img, reset] = result.current;
     expect(img.src).toEqual(images.small);
-    expect(() => reset()).not.toThrow();
+    act(() => {
+      expect(() => reset()).not.toThrow();
+    });
   });
 });

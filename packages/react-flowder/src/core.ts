@@ -61,7 +61,7 @@ export interface DatasourceResolver {
   cancel<T>(key: DatasourceKey<T>): void;
   cancelAll(): void;
 
-  watchStatus<T>(key: DatasourceKey<T>): Subscribable<Status<T>>;
+  watchStatus<T>(key: DatasourceKey<T>): Subscribable<Status<T> | undefined>;
   getStatus<T>(key: DatasourceKey<T>): Status<T>;
 
   writeCache<T>(key: DatasourceKey<T>, value: Status<T>): void;
@@ -105,13 +105,12 @@ export class DatasourceResolverImpl implements DatasourceResolver {
   }
 
   watchStatus<T>(key: DatasourceKey<T>): Subscribable<Status<T>> {
-    const subscribe = (observer: Partial<Observer<Status<T>>>): Unsubscribable => {
+    const subscribe = (observer: Partial<Observer<Status<T> | undefined>>): Unsubscribable => {
       const subscription = this.cache.subscribe((method, cacheKey) => {
         const cache = this.cache.get(key);
-        // キャッシュがなくて自身の更新ではないときはスキップ
-        if (!cache || cacheKey !== key) return;
+        if (cacheKey !== key && method !== "clear") return;
 
-        observer.next?.(cache as Status<T>);
+        observer.next?.(cache as Status<T> | undefined);
       });
       return {
         unsubscribe() {
