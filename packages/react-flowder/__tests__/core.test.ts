@@ -1,7 +1,7 @@
 import { createStore } from "@naporin0624/simple-store";
 import { EMPTY, interval, map, Observable, Subject, Subscription } from "rxjs";
 
-import { datasource, DatasourceKey, DatasourceResolverImpl, fromPromise, getSource, Status } from "../src/core";
+import { datasource, DatasourceKey, DatasourceResolverImpl, fromAsyncFunction, getSource, Status } from "../src/core";
 
 describe("datasource test", () => {
   const timer = interval();
@@ -37,7 +37,7 @@ describe("datasource test", () => {
   });
 
   test("input promise", () => {
-    const resource = fromPromise((number: number) => Promise.resolve(number));
+    const resource = fromAsyncFunction((number: number) => Promise.resolve(number));
 
     expect(() => getSource(resource(1))).not.toThrow();
     expect(getSource(resource(1)) instanceof Observable).toBeTruthy();

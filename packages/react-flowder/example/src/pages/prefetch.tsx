@@ -62,11 +62,11 @@ export async function todo(id: number) {
   }
 } 
 `;
-const DATASOURCE_FILE = `import { datasource, fromPromise } from "@naporin0624/react-flowder";
+const DATASOURCE_FILE = `import { datasource, fromAsyncFunction } from "@naporin0624/react-flowder";
 import * as resource from "./resource";
 
 export const timer = datasource(resource.timer);
-export const todos = fromPromise(resource.todo);
+export const todos = fromAsyncFunction(resource.todo);
 `;
 const SAMPLE_CODE = `import React, { Suspense, useState } from "react";
 import { useReadData, Provider, usePrefetch } from "@naporin0624/react-flowder";

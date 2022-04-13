@@ -31,7 +31,7 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
   builder.toString = () => id;
   return builder;
 };
-export const fromPromise = <Args extends unknown[], T>(factory: (...args: Args) => Promise<T>): Datasource<Args, T> => {
+export const fromAsyncFunction = <Args extends unknown[], T>(factory: (...args: Args) => Promise<T>): Datasource<Args, T> => {
   return datasource((...args: Args) => defer(() => from(factory(...args))));
 };
 
