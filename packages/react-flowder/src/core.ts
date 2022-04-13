@@ -21,8 +21,8 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
   const id = `datasource__${++keyCount}`;
   const builder = (...args: Args): DatasourceKey<T> => {
     const key = `${id}:${stringify(args)}` as DatasourceKey<T>;
-    const r = resource(...args);
     if (!sources.has(key)) {
+      const r = resource(...args);
       if (r instanceof Promise) sources.set(key, from(r));
       else sources.set(key, r);
     }
