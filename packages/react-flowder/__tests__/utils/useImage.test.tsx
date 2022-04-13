@@ -25,12 +25,4 @@ describe("useImage test", () => {
     expect(img.src).toEqual(images.small);
     expect(() => reset()).not.toThrow();
   });
-
-  test("load some image", async () => {
-    const { result, waitForNextUpdate, waitFor } = renderHook(() => useImage([images.small, images.medium, images.large]), { wrapper });
-    await waitForNextUpdate();
-    await waitFor(() => result.current[0].src === images.small);
-    await waitFor(() => result.current[0].src === images.medium);
-    await waitFor(() => result.current[0].src === images.large);
-  });
 });
