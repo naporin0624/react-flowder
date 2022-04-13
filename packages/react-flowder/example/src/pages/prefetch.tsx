@@ -62,18 +62,18 @@ export async function todo(id: number) {
   }
 } 
 `;
-const DATASOURCE_FILE = `import { datasource } from "@naporin0624/react-flowder";
+const DATASOURCE_FILE = `import { datasource, fromPromise } from "@naporin0624/react-flowder";
 import * as resource from "./resource";
 
 export const timer = datasource(resource.timer);
-export const todos = datasource(resource.todo);
+export const todos = fromPromise(resource.todo);
 `;
-const SAMPLE_CODE = `import React, { Suspense, useState, useMemo } from "react";
+const SAMPLE_CODE = `import React, { Suspense, useState } from "react";
 import { useReadData, Provider, usePrefetch } from "@naporin0624/react-flowder";
 import { todos, timer } from "./datasource";
 
 const TodoView: VFC<Props> = ({ id }: { id: number }) => {
-  const todo = useReadData(useMemo(() => todos(id), [id]));
+  const todo = useReadData(todos(id));
 
   return (
     <p style={{ whiteSpace: "pre-wrap" }}>{JSON.stringify(todo, null, 2)}</p>
@@ -81,7 +81,7 @@ const TodoView: VFC<Props> = ({ id }: { id: number }) => {
 };
 
 const PrefetchTodo = () => {
-  const time = useReadData(useMemo(() => timer(), []));
+  const time = useReadData(timer());
   const [fetchedId, setFetchedId] = useState(1);
   const [loading, setLoading] = useState(false);
   const prefetchTodo = usePrefetch(todos);

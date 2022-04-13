@@ -27,14 +27,14 @@ const IndexPage: VFC = () => {
 
 export default memo(IndexPage);
 
-const SAMPLE_CODE = `import React, { Suspense, useMemo } from "react";
+const SAMPLE_CODE = `import React, { Suspense } from "react";
 import { interval } from "rxjs";
 import { datasource, useReadData, Provider } from "@naporin0624/react-flowder";
 
 const timer = datasource(() => interval(1000));
 
 const Timer = () => {
-  const time = useReadData(useMemo(() => timer(), []));
+  const time = useReadData(timer(), []));
 
   return (
     <div>
