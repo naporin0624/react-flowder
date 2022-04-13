@@ -1,32 +1,32 @@
 import { createStore } from "@naporin0624/simple-store";
 import { EMPTY, interval, map, Observable, Subject, Subscription } from "rxjs";
 
-import { datasource, DatasourceKey, DatasourceResolverImpl, getSource, Status } from "../src/core";
+import { datasource, DatasourceKey, DatasourceResolverImpl, fromPromise, getSource, Status } from "../src/core";
 
 describe("datasource test", () => {
   const timer = interval();
-  const timerFlowder = datasource(() => timer);
-  const emptyFlowder = datasource(() => EMPTY);
-  const flowderWithArgs = datasource((a: number) => timer.pipe(map((t) => t + a)));
+  const timerResource = datasource(() => timer);
+  const emptyResource = datasource(() => EMPTY);
+  const withArgs = datasource((a: number) => timer.pipe(map((t) => t + a)));
 
   const notObservableFlowder = datasource(() => 1 as unknown as Observable<never>);
 
   test("key test", () => {
-    expect(typeof timerFlowder.toString).toEqual("function");
-    expect(typeof timerFlowder.toString()).toEqual("string");
-    expect(timerFlowder.toString().startsWith("datasource__")).toEqual(true);
+    expect(typeof timerResource.toString).toEqual("function");
+    expect(typeof timerResource.toString()).toEqual("string");
+    expect(timerResource.toString().startsWith("datasource__")).toEqual(true);
   });
   test("unique key test", () => {
-    expect(timerFlowder()).toEqual(timerFlowder());
-    expect(timerFlowder()).not.toEqual(emptyFlowder());
+    expect(timerResource()).toEqual(timerResource());
+    expect(timerResource()).not.toEqual(emptyResource());
 
-    expect(flowderWithArgs(1)).toEqual(flowderWithArgs(1));
-    expect(flowderWithArgs(1)).not.toEqual(flowderWithArgs(2));
+    expect(withArgs(1)).toEqual(withArgs(1));
+    expect(withArgs(1)).not.toEqual(withArgs(2));
   });
   test("get source test", () => {
-    expect(getSource(timerFlowder())).toEqual(timer);
-    expect(getSource(timerFlowder())).not.toEqual(emptyFlowder());
-    expect(getSource(timerFlowder())).not.toEqual(flowderWithArgs(0));
+    expect(getSource(timerResource())).toEqual(timer);
+    expect(getSource(timerResource())).not.toEqual(emptyResource());
+    expect(getSource(timerResource())).not.toEqual(withArgs(0));
   });
   test("not observable test", () => {
     expect(() => getSource(notObservableFlowder())).toThrowError(new Error("The registered Object is not an Observable."));
@@ -37,7 +37,7 @@ describe("datasource test", () => {
   });
 
   test("input promise", () => {
-    const resource = datasource((number: number) => Promise.resolve(number));
+    const resource = fromPromise((number: number) => Promise.resolve(number));
 
     expect(() => getSource(resource(1))).not.toThrow();
     expect(getSource(resource(1)) instanceof Observable).toBeTruthy();

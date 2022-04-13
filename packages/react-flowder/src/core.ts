@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createStore } from "@naporin0624/simple-store";
 import stringify from "fast-json-stable-stringify";
-import { Subscription, from, Observable, Subscribable, Unsubscribable, Observer } from "rxjs";
+import { Subscription, from, Observable, Subscribable, Unsubscribable, Observer, defer } from "rxjs";
 
-type Resource<Args extends unknown[], T> = (...args: Args) => Observable<T> | Promise<T>;
+type Resource<Args extends unknown[], T> = (...args: Args) => Observable<T>;
 
 declare const $datasource: unique symbol;
 export type DatasourceKey<T> = string & {
@@ -22,9 +22,7 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
   const builder = (...args: Args): DatasourceKey<T> => {
     const key = `${id}:${stringify(args)}` as DatasourceKey<T>;
     if (!sources.has(key)) {
-      const r = resource(...args);
-      if (r instanceof Promise) sources.set(key, from(r));
-      else sources.set(key, r);
+      sources.set(key, resource(...args));
     }
 
     return key;
@@ -32,6 +30,9 @@ export const datasource = <Args extends unknown[], T>(resource: Resource<Args, T
 
   builder.toString = () => id;
   return builder;
+};
+export const fromPromise = <Args extends unknown[], T>(factory: (...args: Args) => Promise<T>): Datasource<Args, T> => {
+  return datasource((...args: Args) => defer(() => from(factory(...args))));
 };
 
 export const getSource = <T>(datasource: DatasourceKey<T>): Observable<T> => {
