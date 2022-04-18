@@ -34,6 +34,7 @@ export const Provider: FC<{ children?: ReactNode | undefined }> = ({ children })
       if (current < 1) {
         // reference counter が 5分間 0のままの時は cleanup を実行する
         const id = setTimeout(() => {
+          cleanup.delete(key);
           count.delete(key);
           resolver.cancel(key);
         }, 1000 * 60 * 5);
@@ -41,6 +42,7 @@ export const Provider: FC<{ children?: ReactNode | undefined }> = ({ children })
       } else {
         // reference counter が 0 以上の時は cleanup を解除する
         cleanup.get(key)?.();
+        cleanup.delete(key);
       }
     });
 
