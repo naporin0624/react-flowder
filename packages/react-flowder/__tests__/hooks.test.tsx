@@ -12,6 +12,8 @@ const resource = datasource(() => any);
 describe("useReadData test", () => {
   afterEach(() => {
     cleanup();
+    jest.useRealTimers();
+    jest.clearAllMocks();
   });
   const wrapper: FC = ({ children }) => <Provider>{children}</Provider>;
 

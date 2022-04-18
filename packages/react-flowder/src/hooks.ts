@@ -1,18 +1,31 @@
-import { useCallback, useContext } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { firstValueFrom } from "rxjs";
 import { useSyncExternalStore } from "use-sync-external-store/shim";
 
 import { DatasourceKey, Datasource, DatasourceResolver, getSource } from "./core";
-import { Context } from "./Provider";
+import { DatasourceResolverContext, ReferenceCounterContext } from "./Provider";
 
 export const useDatasourceResolver = (): DatasourceResolver => {
-  const context = useContext(Context);
+  const context = useContext(DatasourceResolverContext);
+  if (!context) throw new Error("Provider not found");
+
+  return context;
+};
+const useReferenceCounter = () => {
+  const context = useContext(ReferenceCounterContext);
   if (!context) throw new Error("Provider not found");
 
   return context;
 };
 
 export const useReadData = <T>(key: DatasourceKey<T>): T => {
+  const refCounter = useReferenceCounter();
+
+  useEffect(() => {
+    refCounter.increment(key);
+    return () => refCounter.decrement(key);
+  }, [refCounter, key]);
+
   const resolver = useDatasourceResolver();
   resolver.register(key);
 
