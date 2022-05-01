@@ -1,5 +1,7 @@
-type Method = "set" | "clear" | "delete";
-type Listener<K> = (method: Method, key?: K) => void;
+interface Listener<K> {
+  (method: "set" | "delete", key: K): void;
+  (method: "clear"): void;
+}
 
 export interface SimpleStore<K, V> extends Map<K, V> {
   subscribe(listener: Listener<K>): {
@@ -11,17 +13,17 @@ class SimpleStoreImpl<K, V> extends Map<K, V> implements SimpleStore<K, V> {
   private listeners: Map<symbol, Listener<K>> = new Map();
   set(key: K, value: V) {
     const r = super.set(key, value);
-    this.runListeners("set", key);
+    this.notify("set", key);
     return r;
   }
   delete(key: K) {
     const r = super.delete(key);
-    this.runListeners("delete", key);
+    this.notify("delete", key);
     return r;
   }
   clear() {
     const r = super.clear();
-    this.runListeners("clear");
+    this.notify("clear");
     return r;
   }
   subscribe(listener: Listener<K>) {
@@ -32,8 +34,16 @@ class SimpleStoreImpl<K, V> extends Map<K, V> implements SimpleStore<K, V> {
     return { unsubscribe };
   }
 
-  private runListeners(method: Method, key?: K) {
-    this.listeners.forEach((listener) => listener(method, key));
+  private notify(method: "set" | "delete", key: K): void;
+  private notify(method: "clear"): void;
+  private notify(method: "set" | "delete" | "clear", key?: K): void;
+  private notify(method: "set" | "delete" | "clear", key?: K): void {
+    if (method === "clear") return this.listeners.forEach((listener) => listener(method));
+    if (!key) return;
+
+    this.listeners.forEach((listener) => {
+      listener(method, key);
+    });
   }
 }
 
