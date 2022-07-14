@@ -43,6 +43,11 @@ export const useReadData = <T>(key: DatasourceKey<T>): T => {
       const status = resolver.getStatus(key);
       if (status.type === "success") return status.data;
       throw status.data;
+    }, [key, resolver]),
+    useCallback(() => {
+      const status = resolver.getStatus(key);
+      if (status.type === "success") return status.data;
+      throw status.data;
     }, [key, resolver])
   );
 };
