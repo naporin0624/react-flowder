@@ -1,6 +1,5 @@
 interface Listener<K> {
-  (method: "set" | "delete", key: K): void;
-  (method: "clear"): void;
+  (method: "set" | "delete" | "clear", key?: K): void;
 }
 
 export interface SimpleStore<K, V> extends Map<K, V> {

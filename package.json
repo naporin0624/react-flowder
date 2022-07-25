@@ -31,5 +31,8 @@
     "predeploy": "yarn build && yarn test",
     "deploy": "lerna publish --no-verify-access",
     "coverage": "lerna run test -- --coverage"
+  },
+  "volta": {
+    "node": "14.20.0"
   }
 }
