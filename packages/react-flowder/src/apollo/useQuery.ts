@@ -1,5 +1,5 @@
 import { OperationVariables, QueryOptions, useApolloClient } from "@apollo/client";
-import { datasource, useReadData, Datasource } from "@naporin0624/react-flowder";
+import { datasource, useReadData, Datasource } from "react-flowder";
 import { Observable } from "rxjs";
 
 import { datasources } from "./cache";

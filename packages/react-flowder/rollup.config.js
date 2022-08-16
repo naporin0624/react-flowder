@@ -6,7 +6,7 @@ const createESMConfig = (dir) => {
   return {
     input: `./src/${dir}/index.ts`,
     output: [{ file: `lib/${dir}/index-esm.js`, format: "es" }],
-    external: ["@naporin0624/react-flowder"],
+    external: ["react-flowder"],
     plugins: [
       typescript({
         tsconfigOverride: {
@@ -19,6 +19,7 @@ const createESMConfig = (dir) => {
 const createCommonConfig = (dir) => {
   return {
     input: `./src/${dir}/index.ts`,
+    external: ["react-flowder"],
     output: [{ file: `lib/${dir}/index-cjs.js`, format: "cjs", exports: "named" }],
     plugins: [
       typescript({

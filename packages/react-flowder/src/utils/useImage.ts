@@ -1,5 +1,5 @@
-import { datasource, useReadData, useReset } from "@naporin0624/react-flowder";
 import { useCallback, useMemo } from "react";
+import { datasource, useReadData, useReset } from "react-flowder";
 import { combineLatest, concat, map, Observable, of } from "rxjs";
 
 const createImageSource = (src: string): Observable<HTMLImageElement> => {

@@ -4,8 +4,7 @@
     "jsx": "react",
     "noEmit": true,
     "paths": {
-      "@naporin0624/react-flowder": ["./src/index.ts"],
-      "jotai/*": ["./src/*.ts"]
+      "react-flowder": ["./src/index.ts"]
     }
   },
   "include": ["src", "__tests__"]

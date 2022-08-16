@@ -1,6 +1,6 @@
 import { useApolloClient } from "@apollo/client";
-import { useReset } from "@naporin0624/react-flowder";
 import { useCallback } from "react";
+import { useReset } from "react-flowder";
 
 import { datasources } from "./cache";
 
